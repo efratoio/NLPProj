@@ -1,0 +1,99 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1.35in]{geometry}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{epstopdf}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage[vlined,ruled,commentsnumbered]{algorithm2e}
+\usepackage{tikz-qtree,tikz-qtree-compat}
+\usepackage{tikz}
+\usepackage{xr}
+\usepackage{titling}
+\usepackage{amsfonts}
+\usetikzlibrary{calc,trees,positioning,arrows,fit,shapes,calc}
+%\usepackage{tikz}
+\tikzset{every tree node/.style={align=center, anchor=north}}
+\definecolor{myblue}{RGB}{80,80,160}
+\definecolor{mygreen}{RGB}{80,160,80}
+\definecolor{LightCyan}{rgb}{0.88,1,1}
+\definecolor{antiquewhite}{rgb}{0.98, 0.92, 0.84}
+\usepackage{array}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}%
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{array}
+\let\chapter\undefined
+\usepackage{changepage}
+
+% \usepackage{listings}% http://ctan.org/pkg/listings
+% \lstset{
+%   basicstyle=\ttfamily,
+%   %basicstyle=\fontfamily{lmvtt}\selectfont
+%   mathescape
+% }
+
+
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+
+\captionsetup{skip=0pt}
+
+\newcommand{\reminderb}[1]{\textcolor{blue}{[[[#1]]]}}
+
+\newcommand{\amir}[1]{\reminderb{\bf (Amir)~#1}{\typeout{#1}}}
+
+\newcommand{\systemName}{{\tt NLProv}}
+\newcommand{\nalir}{{\tt NaLIR}}
+\newcommand{\selp}{{\tt SelP}}
+\newcommand{\sprql}{{\tt SPARQL}}
+
+\newcommand{\trans}{{dependency-to-query-mapping}}
+\newcommand{\parse}{{parse-to-prov-mapping}}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{note}[theorem]{Note}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{definition}[theorem]{Definition}
+
+\setlength{\droptitle}{-5em}   % This is your set screw
+
+\SetAlFnt{\small}
+
+\usepackage[pdfborder={0 0 0}, plainpages, pdfpagelabels=false, pdfstartview=FitH]{hyperref}
+\usepackage{paralist}
+\begin{document}
+\title{
+Project For NLP and ML courses}
+
+\author{Efrat Abramovitch, Amir Gilad, Slava Novgorodov
+\\ Tel Aviv University
+ }
+\maketitle
+% \begin{abstract}
+% \end{abstract}
+
+\input{intro}
+
+\bibliographystyle{abbrv}
+{\small
+\bibliography{bib}
+}
+
+\end{document}

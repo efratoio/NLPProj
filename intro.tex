@@ -1,0 +1,46 @@
+%!TEX root = main.tex
+\section{High-Level Description}
+Conversation understanding has been the subject of 
+extensive research \cite{...}. These works explore 
+different aspects of conversations, from winning an argument 
+to automatically recognize the speaker at each segment of the dialog. 
+Our project aims to employ NLP and machine learning techniques to 
+understand the {\em bottom-line} of a conversation, based on segments 
+of it. Such a system can be highly useful in the context of automatic 
+chatbots which can asses the probability of a purchase at the end of 
+the conversation or what strategy it should employ in order to get there. 
+Customer service teams can also benefit from the system as they can decide 
+whether a customer is calling to terminate the contract with the company 
+or just to get a discount. 
+\amir{Amir to detail more}
+
+\section{Solution Details}
+To predict the bottom-line, our solution will include several stages. 
+First, we will identify the topic of the conversation and named entities 
+appearing in it. Second, we will segment the conversation, 
+and cluster the different segments to identify types of 
+``Conversational building blocks'' and learn probabilities 
+of transferring from one type of segment to another. 
+On top of the segments classification, we will extract features of 
+conversation (e.g., dominance of one of the parties, 
+the volume of text in the replies, usage of positive/negative words, 
+time lapses between responses). 
+We will use these features as input to MEMM/RNN to predict the 
+most probable continuation of the conversation 
+(similarly to what is done with Part-of-Speech tagging). 
+\amir{Slava to detail about strategy}
+
+
+\section{Data}
+We plan to make use of all or a part of the data sources detailed here. 
+\begin{itemize}
+	\item {\bf The NPS Chat Corpus:} part of the Natural Language Toolkit (NLTK) distribution. 
+	NLTK is a ``platform for building Python programs to work with human language data''. 
+	It includes both the whole NPS Chat Corpus, as well as a number of modules for working with the data. 
+	Each sentence includes POS tags and a class (e.g., question) \cite{NPS}.
+
+	\item {\bf Kaggle compatitions: }
+
+	\item {\bf Camidal.or/~mh521/dstc}
+\end{itemize}
+\amir{Efrat to continue detail about data}
