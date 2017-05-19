@@ -1,18 +1,18 @@
 %!TEX root = main.tex
-\section{High-Level Description}
-Conversation understanding has been the subject of 
-extensive research \cite{...}. These works explore 
-different aspects of conversations, from winning an argument 
-to automatically recognize the speaker at each segment of the dialog. 
+\section{Introduction}
+Dialog understanding has been the subject of 
+extensive research \cite{BohusR03,BordesW16,GhazvininejadBC17,ShawarA03}. These works explore 
+different aspects of dialogs, from winning an argument \cite{TanNDL16} 
+to automatically recognize the emotions conveyed in a conversation at each segment \cite{AyadiKK11}. 
 Our project aims to employ NLP and machine learning techniques to 
-understand the {\em bottom-line} of a conversation, based on segments 
+predict the {\em bottom-line} of a conversation, based on segments 
 of it. Such a system can be highly useful in the context of automatic 
-chatbots which can asses the probability of a purchase at the end of 
-the conversation or what strategy it should employ in order to get there. 
+chatbots. Consider, for example, a chat with a potential customer where 
+from a certain point in the dialog, the system can asses the probability of a purchase 
+or what strategy it should employ in order to get there. 
 Customer service teams can also benefit from the system as they can decide 
-whether a customer is calling to terminate the contract with the company 
-or just to get a discount. 
-\amir{Amir to detail more}
+from whether a customer is calling to terminate the contract with the company 
+or just to get a discount.
 
 \section{Solution Details}
 To predict the bottom-line, our solution will include several stages. 
