@@ -32,15 +32,29 @@ most probable continuation of the conversation
 
 
 \section{Data}
-We plan to make use of all or a part of the data sources detailed here. 
+% \bf{Dialogue Act:}
+All the relevant corpora is tagged with Dialogue Act tags - a tag that given to each utterance in the conversation and represents the act that was done by it. For example - Agreement, Question, Anser, etc.
+
+There are several standards of DA - DAMSL, DIT++ etc. 
 \begin{itemize}
-	\item {\bf The NPS Chat Corpus:} part of the Natural Language Toolkit (NLTK) distribution. 
-	NLTK is a ``platform for building Python programs to work with human language data''. 
-	It includes both the whole NPS Chat Corpus, as well as a number of modules for working with the data. 
-	Each sentence includes POS tags and a class (e.g., question) \cite{NPS}.
+	\item {\bf The NPS Chat Corpus:} The NPS Chat Corpus, Release 1.0 consists of 10,567 posts out of approximately 500,000 posts gathered from various online chat services.
+Each reply is tagged with POS for every word and also a tag that is given to that reply - Accept, Bye, Clarify, Continuer, Emotion, Emphasis, Greet, No Answer, Other, Reject, Statement, System, Wh-Question, Yes Answer, Yes/No Question
+	\item {\bf AMI corpus:} The AMI Meeting Corpus is a collection of recordings of meetings based on a scenario. The subject of this scenario is the design of a remote control device in a virtual company.
+The correspondence is annotated with dialogue acts and also segments of the conversation are labels with topics, subtopics, and functional labels – 4 types of labels: Opening, Closing, Agenda/Equipment and Chitchat.
 
-	\item {\bf Kaggle compatitions: }
-
-	\item {\bf Camidal.or/~mh521/dstc}
+	\item {\bf The Dialog Bank:} Contains four dialogue corpora in English and four in Dutch. All corpora is annotated with ISO 24617-2, DIT++ and DAMSL annotations
 \end{itemize}
-\amir{Efrat to continue detail about data}
+
+\section{Related Work}
+Dialogue analysis studies was first began in the field of linguistics.
+John L. Austin introduced the concept of "Speech Act" - he observed that in the act of speaking the meaning of the utterance cannot be determined solely on the facts stated, but there is a notion of action that the speaker perform while uttering that phrase.
+
+The speech act notion was used later on, in order to learn and understand the structure of a conversation, similar to the way parts of speech are used to understand the structure of a sentence. Stolcke \cite{cs-CL-0006023} described algorithms to label conversations with Dialogue Acts, and used it on a large corpora of speech: Switchboard corpus of human-human conversational telephone speech (Godfrey, Holliman, and McDaniel 1992)
+The dialogue is consisting out of turns each turn consists of utterances
+The discourse structure annotation Dialogue Act Markup in Several Layers – DAMSL
+These DA labels used to build a discourse grammar - statistical model for DA sequences.
+The probabilities for this grammar is based on the words transcribed, words recognized acoustics, and prosodic features – acoustics features like pitch, duration, etc.
+
+One on the shortcomings of the Markovian assumption (Not considering global objectives) is that it cannot capture conversational games i.e. the notion that sometimes a new thread is opened in a conversation and then closed. Geertzen \cite{Geertzen} used CFG grammar in order to compete with this issue.
+
+There were some research on graphical methods to derive DA \cite{DBLP:conf/icassp/2005}, and recurrent neural networks \cite{DBLP:conf/coling/1996}. It concluded that factored language models works better then n-gram switching oeverall.
