@@ -27,9 +27,14 @@ the volume of text in the replies, usage of positive/negative words,
 time lapses between responses). 
 We will use these features as input to MEMM/RNN to predict the 
 most probable continuation of the conversation 
-(similarly to what is done with Part-of-Speech tagging). 
-\amir{Slava to detail about strategy}
 
+One of the challanges will be to identify the main topic of the whole conversation, and for each
+part of it. To address this issue our solution will use external knowledge base, for the relevant
+domain (i.e. if we will use e-commerce chatbots conversations - the knowledge base will be a
+catalog of products and their properties. For predicting outcome of geopolitical conversations we
+will use knowledge bases as YAGO and DBPedia). Using of the knowledge base will allow us to
+have better semantic understanding of the dialog, both while training the model and for testing. 
+Using knowledge base we can find similarities between different conversations (i.e. consider a chat about travelling suggestions, one about New York (on training step) and the second one about Tokyo (testing). Understand that both New York and Tokyo are cities will allow us to reuse the information about dialogs). Moreover, clustering dioalogs based on semantic similarity can be a boost for a better training.
 
 \section{Data}
 We focus on datasets regarding {\em Dialog Act} (or DA) where all the relevant corpora is tagged with Dialog Act tags. 
