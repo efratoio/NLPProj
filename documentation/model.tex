@@ -1,0 +1,82 @@
+%!TEX root = main.tex
+\section{Model and Design}\label{sec:model}
+
+\subsection{Model}
+In this section we detail our problem model and the necessary background 
+for our solution.
+
+The problem we aim to solve is related to the Document Classification task 
+\cite{DBLP:conf/naacl/YangYDHSH16,Slonim:2002:UDC:564376.564401,DBLP:journals/tkde/IsaLKR08} 
+and aims at inferring the direction the dialog is headed. 
+In our model, we consider a chat between two sides (a chatbot and a customer, two friends, etc.). 
+A chat can be modeled as a sequence of sentences, 
+where each sentence is associated with a timestamp and a speaker. 
+Therefore, we denote the set of all sequences of 
+such sentences by $\mathcal{S}$ and define the concept of {\em sequence prefix}. 
+
+\begin{definition}
+For $seq_1, seq_2 \in \mathcal{S}$, we say that $seq_1$ is the 
+prefix of $seq_2$ and denote by $seq_1 = pr(seq_2)$, if 
+$seq_1 = (s_1, \ldots, s_j)$, $seq_1 = (s_1, \ldots, s_j, \ldots, s_n)$, i.e., $seq_1$ is the 
+first part of $seq_2$.
+\end{definition}
+
+Furthermore, the chats we consider are targeted at a specific purpose 
+(whether it be convincing the customer to purchase a product, helping a friend accomplish a task, etc.), and thus can be defined by their outcome, which 
+is either success of failure (the customer buying the product, the friend accomplished the task, etc.). Thus, we define our task as a target function, intuitively predicting the outcome of the chat from its prefix.
+
+\begin{definition}
+Given an integer $k$ and a set of sequences of sentences $S=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{S}$,
+where each sentence $s_i$ is associated with a timestamp and a speaker, for every sequence $seq_i\in S$, there exists another sequence $seq_j\in \mathcal{S}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ the solution to the dialog-end 
+problem is a function $f:S \to \{0,1\}$ where for each sequence $seq_i$, $f(seq_i) = 1$ iff the purpose of the chat $seq_i$ is accomplished in $seq_j$. 
+\end{definition}
+
+Hence, our task is a binary classification 
+problem of finding the the function $f$.  
+Note that for every choice of $k$ we get a different 
+version of the problem and where a larger $k$ leads 
+to an easier problem, since each sequence contains 
+more information from the chat, until the elements of $S$ 
+are the entire chat. The case where the entire chats are 
+given can be interpreted as challenge in the Dialog Act \cite{cs-CL-0006023,DBLP:conf/icassp/JiB05,DBLP:conf/coling/WermterL96}
+field and can be solved using similar approaches, since we 
+can tag all actions and search for the action signaling the task's completion. 
+In our setting, however, we assume that $k$ is smaller than the dialog 
+length, thus presenting a different challenge, requiring a somewhat different approach. 
+
+\subsection{Features}
+We use two types of features, designed to capture
+different aspects of the problem. We use neural 
+language model features to leverage corpus
+level word distributions and sentence understandings, 
+specifically longer term
+sequence probabilities. In addition, we use the meta-data of the chat in order to extract characteristics features of the chat 
+to help capture other aspects.
+
+\paragraph*{Language Model Features}
+\amir{Efrat - Complete}
+
+\paragraph*{Semantic Features}
+A reasonable approach is to include features 
+extracted from the meta-data of the chat as 
+these can further enrich the our model. 
+
+We add the following semantic features 
+to describe the general nature 
+of the interaction between the two sides 
+in the sequence. All features here 
+are computed from the given meta-data of the sequence and 
+are part of the final representation of the data as it goes into the 
+third level of the network (see Section \ref{sec:network}). 
+
+\begin{itemize}
+\item {\bf time between responses: } The time between 
+turns of the two sides, i.e. how long does it take to respond or ask a follow-up question after a given sentence on average
+
+\item {\bf Total time of the chat: } The total time of the interaction 
+
+% \item {\bf Dominant speaker: } Who is the speaker who is associated with the majority of sentences in the sequence 
+\end{itemize} 
+
+\subsection{Ontology}
+\amir{Slava - talk about semantic difference between sentences}

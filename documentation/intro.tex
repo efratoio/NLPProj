@@ -1,0 +1,57 @@
+%!TEX root = main.tex
+\section{Introduction}\label{sec:into}
+\amir{reshape}
+Dialog understanding has been the subject of 
+extensive research \cite{BohusR03,BordesW16,GhazvininejadBC17,ShawarA03,DBLP:conf/icassp/JiB05,DBLP:conf/coling/WermterL96}. 
+These works explore different aspects of dialogs, from winning an argument \cite{TanNDL16} 
+to automatically recognize the emotions conveyed in a conversation at each segment \cite{AyadiKK11}. 
+Namely, previous work \cite{...} have tried to learn dialog 
+generation and tag dialog acts, towards building effective chatbots. 
+
+Our work complements these efforts in order to {\em understand the 
+direction to which the conversation is headed using only its 
+first part}. The motivation for this feature is to learn how 
+well the conversation is going, {\em during its progress} in order 
+to change strategy if necessary or end it. 
+Uses for this feature include automatic chatbots whose goals 
+are to sell a product by the end of the chat, a teacher and a student 
+where the teacher tries to instruct the student how to achieve a certain task, 
+and even to recognize a potential fraud email based on the first few 
+messages.
+Customer service teams can also benefit from the system as it can recognize 
+whether a customer is calling to terminate the contract with the company 
+or just to get a discount. 
+
+We provide a formal model for the problem and provide a solution 
+that achieves X\% \amir{complete} accuracy on our benchmark dataset. 
+
+Our solution includes several stages. 
+We first extract language feature and semantic features from the conversations 
+and then use an ontology to add yet more features that imply if the conversation 
+is headed towards its target. 
+The language model we have used consists of two hierarchical layers \cite{DBLP:conf/naacl/YangYDHSH16}, the lower 
+models the words and the upper models the sentences. We have further 
+incorporated attention \cite{BahdanauCB14} in each layer. 
+By incorporating the semantic features, 
+we enrich our model with meta-data containing subtle observations 
+that would have remained obfuscated if the model would have considered only dialog. 
+
+% First, we will identify the topic of the conversation and named entities 
+% appearing in it. Second, we will segment the conversation, 
+% and cluster the different segments to identify types of 
+% ``Conversational building blocks'' and learn probabilities 
+% of transferring from one type of segment to another. 
+% On top of the segments classification, we will extract features of 
+% conversation (e.g., dominance of one of the parties, 
+% the volume of text in the replies, usage of positive/negative words, 
+% time lapses between responses). 
+% We will use these features as input to MEMM/RNN to predict the 
+% most probable continuation of the conversation 
+
+% One of the challenges will be to identify the main topic of the whole conversation, and for each
+% part of it. To address this issue our solution will use external knowledge base, for the relevant
+% domain (i.e. if we will use e-commerce chatbots conversations - the knowledge base will be a
+% catalog of products and their properties. For predicting outcome of geopolitical conversations we
+% will use knowledge bases as YAGO and DBPedia). Using of the knowledge base will allow us to
+% have better semantic understanding of the dialog, both while training the model and for testing. 
+% Using knowledge base we can find similarities between different conversations (i.e. consider a chat about traveling suggestions, one about New York (on training step) and the second one about Tokyo (testing). Understand that both New York and Tokyo are cities will allow us to reuse the information about dialogs). Moreover, clustering dioalogs based on semantic similarity can be a boost for a better training.
