@@ -1,3 +1,19 @@
 %!TEX root = main.tex
 \section{Network Architecture}\label{sec:network}
 \amir{Amir and Efrat - complete}
+
+\subsection{Semantic Feature Network}
+As another model for our network, 
+the semantic features specified in Section \ref{sec:semantic} 
+were added separate vectors, so that 
+each conversation has a semantic vector. 
+Note that the length of the vector depends on $k$, 
+i.e., the number of sentences in the sequences. 
+A semantic vector has $k+2$ coordinates since feature \ref{itm:between} in Section \ref{sec:semantic} requires $k-1$ coordinates 
+and there are $3$ additional features. 
+These vectors are the input for a fully-connected neural 
+network with 2 hidden layers, with 12 and 8 neurons, respectively. 
+As this is a binary classification, the network has an output layer of size 1. 
+For both hidden layers we have used the rectified linear unit as the activation 
+function and for the output we applied the sigmoid function.
+

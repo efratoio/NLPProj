@@ -56,7 +56,7 @@ to help capture other aspects.
 \paragraph*{Language Model Features}
 \amir{Efrat - Complete}
 
-\paragraph*{Semantic Features}
+\paragraph*{Semantic Features}\label{sec:semantic}
 A reasonable approach is to include features 
 extracted from the meta-data of the chat as 
 these can further enrich the our model. 
@@ -69,14 +69,27 @@ are computed from the given meta-data of the sequence and
 are part of the final representation of the data as it goes into the 
 third level of the network (see Section \ref{sec:network}). 
 
-\begin{itemize}
-\item {\bf time between responses: } The time between 
-turns of the two sides, i.e. how long does it take to respond or ask a follow-up question after a given sentence on average
+\begin{enumerate}
+\item {\bf Time between responses: } the time between 
+turns of the two sides, i.e. how long does it take to respond or ask a follow-up 
+question after a given sentence on average. 
+If responses are fast, it can imply that one side is dissatisfied 
+from the other and does not have to think of her replies or whether 
+she should agree with the other side\label{itm:between}
 
-\item {\bf Total time of the chat: } The total time of the interaction 
+\item {\bf Total time of the chat: } the total time of the interaction \label{itm:total}
+
+\item {\bf Average sentence length for each speaker: } since there are two sides to the conversation, 
+we take the average of length of the sentence for each of the two sides. 
+A longer sentence means a more elaborate description, which indicates 
+a good first impression\label{itm:sent}
+
+
+\item {\bf Monetary Mentions: } if the topic of budget or money is mentioned in the conversation, 
+Intuitively, this feature indicates a progress in the booking process\label{itm:budget}
 
 % \item {\bf Dominant speaker: } Who is the speaker who is associated with the majority of sentences in the sequence 
-\end{itemize} 
+\end{enumerate} 
 
 \subsection{Ontology}
 \amir{Slava - talk about semantic difference between sentences}
