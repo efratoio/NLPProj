@@ -1,19 +1,133 @@
 %!TEX root = main.tex
 \section{Network Architecture}\label{sec:network}
-\amir{Amir and Efrat - complete}
+For the architecture of our network , 
+Our network (whose architecture is depicted in Figure \ref{fig:arch}) consists of two main components: 
+a text encoder for which we have augmented the hierarchical attention network described in \cite{attention}, 
+and a semantic feature encoder. 
 
-\subsection{Semantic Feature Network}
-As another model for our network, 
-the semantic features specified in Section \ref{sec:semantic} 
-were added separate vectors, so that 
-each conversation has a semantic vector. 
+\subsection{Text Encoder}
+
+\paragraph*{GRU Encoder}
+We have divided the task of encoding the dialog into several 
+layers of encoders, each dealing with the dialog in a different granularity. 
+At the lowest lever, we encode the words of each dialog into vectors 
+and use word-level attention. Then a sentence encoder and sentence level attention 
+translate the sentences into vectors, again using sentence-level attention, to extract a vector describing the text. 
+We use a GRU-based sequence encoder \cite{BahdanauCB14} which uses 
+a reset gate and an update gate ($r_t$ and $z_t$, respectively), 
+so that at time $t$ the state of the GRU is 
+
+\begin{equation*}
+	h_t = (1-z_t)\cdot h_{t-1} + z_t \cdot \widetilde{h_t}
+\end{equation*}
+
+Where $h_{t-1}$ is the previous state and $\widetilde{h_t}$ 
+is the current new state, computed with the new sequence information. 
+$z_t$ controls the amount of past information that is kept 
+and the amount of newly added information. $z_t$ is updated like so
+
+\begin{equation*}
+	z_t = \sigma(W_z x_t + U_z h_{t-1} + b_z)
+\end{equation*}
+
+$x_t$ is the sequence vector at time $t$ and 
+$\widetilde{h_t}$ is the candidate state, which is 
+computed in this manner: 
+
+\begin{equation*}
+	\widetilde{h_t} = tanh(W_h x_t + r_t \cdot U_h h_{t-1} + b_h)
+\end{equation*}
+
+As mentioned previously, $r_t$ is the reset gate 
+controlling how much of the information embedded in 
+the previous state will contribute to the new candidate state. 
+Note that if $r_t = 0$, the previous state is neglected. 
+To update $r_t$, we have the following equation (similar to the update of $z_t$)
+
+\begin{equation*}
+	r_t = \sigma(W_r x_t + U_r h_{t-1} + b_r)
+\end{equation*}
+
+\paragraph*{Combining Attention}
+Given an instance of the problem $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$, where $|seq_i| = k$ for some $k \in \mathbb{N}$, each sequence contains $S_i$ sentences, each sentence $s_i \in seq_j$ contains $T_i$ words. 
+We describe the different levels of encoding the attention that lead 
+to an encoding of the entire sequence. From there, we perform 
+a binary classification. 
+
+In the word level, we embed each word using an embedding matrix \cite{glove} 
+and use a bidirectional GRU 
+to get annotations of words by summarizing information
+from both directions for words \cite{attention}. 
+Employing both a forward and a backward GRU 
+allows the encoder to get the contextual meaning of the words. 
+For a given word $w_{it}, t\in [0,T]$, 
+we concatenate the forward hidden state and
+backward hidden state to get its annotation. 
+
+In the attempt of distinguishing the important 
+words in the sentence from the rest, we employ word-level 
+attention. We highlight the words that most contribute 
+to the meaning of the entire sentence so that we can represent 
+a sentence vector $s_i$. 
+
+First, the word annotation $h_{it}$ is fed 
+through a one-layer MLP to get $u_{it}$ as a hidden representation
+of $h_{it}$. Then, the normalized importance weight of the word $\alpha_{it}$ 
+is computed as the similarity of $u_{it}$ with the word-level 
+context vector $u_w$. 
+Finally, the sentence vector $s_i$ is a weighted sum of the word annotations
+based on the weights. 
+
+\begin{equation*}
+	u_{it} = tanh(W_w h_{it} + b_w)
+\end{equation*}
+
+\begin{equation*}
+	\alpha_{it} = \frac{exp(u^T_{it} u_w)}{\sum_t exp(u^T_{it} u_w)}
+\end{equation*}
+
+\begin{equation*}
+	s_i = \sum_{t} \alpha_{it} h_{it}
+\end{equation*}
+
+We use a similar mechanism (including the forward and backward 
+GRU, and the attention layer) for the sentence-level vectors, 
+for the sentences appearing in each turn in the sequence $seq_i$. 
+The output of this stage is a turn vector. 
+
+Once we have the representation of all the turns in $seq_i$, 
+we again use a GRU to convert then into a sequence vector $v$. 
+
+\subsection{Semantic Features}
+The additional semantic features specified in Section \ref{sec:semantic} 
+are added as coordinates in the sequence vector $v$, so that 
+each vector also contains semantic features. 
+All features are normalized by taking the largest 
+value in each coordinate across all sequences and dividing 
+all values in that coordinate by this value.  
 Note that the length of the vector depends on $k$, 
 i.e., the number of sentences in the sequences. 
 A semantic vector has $k+2$ coordinates since feature \ref{itm:between} in Section \ref{sec:semantic} requires $k-1$ coordinates 
 and there are $3$ additional features. 
-These vectors are the input for a fully-connected neural 
-network with 2 hidden layers, with 12 and 8 neurons, respectively. 
-As this is a binary classification, the network has an output layer of size 1. 
-For both hidden layers we have used the rectified linear unit as the activation 
-function and for the output we applied the sigmoid function.
+% These vectors are the input for a fully-connected neural 
+% network with 2 hidden layers, with 12 and 8 neurons, respectively. 
+% As this is a binary classification, the network has an output layer of size 1. 
+% For both hidden layers we have used the rectified linear unit as the activation 
+% function and for the output we applied the sigmoid function.
+
+
+\subsection{Classification}
+After obtaining the abstract representation of the sequences, 
+we use a layer of two neurons to classify the sequences and 
+generate a function approximating the solution (Definition \ref{def:target}) 
+
+\begin{equation*}
+	p = softmax(W_c v + b_c)
+\end{equation*}
+
+Negative log-likelihood was used to correct labels ($j$ is the label of sequence $i$): 
+
+\begin{equation*}
+	L = - \sum_{i} \log{p_{ij}}
+\end{equation*}
 
