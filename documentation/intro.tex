@@ -1,14 +1,14 @@
 %!TEX root = main.tex
 \section{Introduction}\label{sec:into}
-\amir{reshape}
+% \amir{reshape}
 Dialog understanding has been the subject of 
 extensive research \cite{BohusR03,BordesW16,GhazvininejadBC17,ShawarA03,DBLP:conf/icassp/JiB05,DBLP:conf/coling/WermterL96}. 
 These works explore different aspects of dialogs, from winning an argument \cite{TanNDL16} 
 to automatically recognize the emotions conveyed in a conversation at each segment \cite{AyadiKK11}. 
-Namely, previous work \cite{...} have tried to learn dialog 
+Namely, previous work \cite{ShawarA03,Jia09,ShawarA08,AngLS05,SurendranL06} has tried to learn dialog 
 generation and tag dialog acts, towards building effective chatbots. 
 
-Our work complements these efforts in order to {\em understand the 
+Our work complements these efforts and aims to {\em understand the 
 direction to which the conversation is headed using only its 
 first part}. The motivation for this feature is to learn how 
 well the conversation is going, {\em during its progress} in order 
@@ -26,8 +26,8 @@ We provide a formal model for the problem and provide a solution
 that achieves X\% \amir{complete} accuracy on our benchmark dataset. 
 
 Our solution includes several stages. 
-We first extract language feature and semantic features from the conversations 
-and then use an ontology to add yet more features that imply if the conversation 
+We first model the text in the given patial dialog and further extract semantic features from the dialogs. 
+We then use an ontology to add yet more features that imply if the conversation 
 is headed towards its target. 
 The language model we have used consists of two hierarchical layers \cite{attention}, the lower 
 models the words and the upper models the sentences. We have further 

@@ -16,11 +16,11 @@ in the dataset, namely sentences that include a ``book'' action.
 We have divided the dataset into 1000 training chats and 300 test chats.
 
 Starting from the word embeddings, we have used the 
-NLTK package \cite{DBLP:conf/acl/Bird06} and the already trained network Glove \cite{DBLP:conf/emnlp/PenningtonSM14} 
+NLTK package \cite{DBLP:conf/acl/Bird06} and the already trained network GloVe \cite{glove} 
 to embed the words in each sentence to vectors using the the Keras package \cite{chollet2015}. 
 We then use Keras to build our hierarchal network, train it and test it on the 
 dataset, with the exception of the attention layers applied on both the word and sentence 
-levels, implementing the concept presented in \cite{DBLP:conf/naacl/YangYDHSH16,tc}.
+levels, implementing the concept presented in \cite{attention,tc}.
 
 
 
