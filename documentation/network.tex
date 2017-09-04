@@ -1,12 +1,93 @@
 %!TEX root = main.tex
 \section{Network Architecture}\label{sec:network}
-\amir{Amir and Efrat - complete}
+For the architecture of our network , 
+Our network (whose architecture is depicted in Figure \ref{fig:arch}) consists of two main components: 
+a text encoder for which we have augmented the hierarchical attention network described in \cite{attention}, 
+and a semantic feature encoder. 
+
+\subsection{Text Encoder}
+
+\paragraph*{GRU Encoder}
+We have divided the task of encoding the dialog into several 
+layers of encoders, each dealing with the dialog in a different granularity. 
+At the lowest lever, we encode the words of each dialog into vectors 
+and use word-level attention. Then a sentence encoder and sentence level attention 
+translate the sentences into vectors, again using sentence-level attention, to extract a vector describing the text. 
+We use a GRU-based sequence encoder \cite{BahdanauCB14} which uses 
+a reset gate and an update gate ($r_t$ and $z_t$, respectively), 
+so that at time $t$ the state of the GRU is 
+
+\begin{equation*}
+	h_t = (1-z_t)\cdot h_{t-1} + z_t \cdot \widetilde{h_t}
+\end{equation*}
+
+Where $h_{t-1}$ is the previous state and $\widetilde{h_t}$ 
+is the current new state, computed with the new sequence information. 
+$z_t$ controls the amount of past information that is kept 
+and the amount of newly added information. $z_t$ is updated like so
+
+\begin{equation*}
+	z_t = \sigma(W_z x_t + U_z h_{t-1} + b_z)
+\end{equation*}
+
+$x_t$ is the sequence vector at time $t$ and 
+$\widetilde{h_t}$ is the candidate state, which is 
+computed in this manner: 
+
+\begin{equation*}
+	\widetilde{h_t} = tanh(W_h x_t + r_t \cdot U_h h_{t-1} + b_h)
+\end{equation*}
+
+As mentioned previously, $r_t$ is the reset gate 
+controlling how much of the information embedded in 
+the previous state will contribute to the new candidate state. 
+Note that if $r_t = 0$, the previous state is neglected. 
+To update $r_t$, we have the following equation (similar to the update of $z_t$)
+
+\begin{equation*}
+	r_t = \sigma(W_r x_t + U_r h_{t-1} + b_r)
+\end{equation*}
+
+\paragraph*{Combining Attention}
+Given an instance of the problem $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$, where $|seq_i| = k$ for some $k \in \mathbb{N}$, each sequence contains $S_i$ sentences, each sentence $s_i \in seq_j$ contains $T_i$ words. 
+We describe the different levels of encoding the attention that lead 
+to an encoding of the entire sequence. From there, we perform 
+a binary classification. 
+
+In the word level, we embed each word using an embedding matrix \cite{glove} 
+and use a bidirectional GRU 
+to get annotations of words by summarizing information
+from both directions for words \cite{attention}. 
+Employing both a forward GRU and a backward GRU 
+allows the encoder to get the contextual meaning of the words. 
+For a given word $w$, 
+we concatenate the forward hidden state and
+backward hidden state to get its annotation. 
+
+In the attempt of distinguishing the important 
+words in the sentence from the rest, we employ word-level 
+attention. We highlight the words that most contribute 
+to the meaning of the entire sentence so that we can represent 
+a sentence vector. 
+
+\begin{equation*}
+	u_{it} = tanh(W_w h_{it} + b_w)
+\end{equation*}
+
+\begin{equation*}
+	\alpha_{it} = \frac{exp(u^T_{it} u_w)}{\sum_t exp(u^T_{it} u_w)}
+\end{equation*}
+
+\begin{equation*}
+	s_i = \sum_{t} \alpha_{it} h_{it}
+\end{equation*}
+
 
 \subsection{Semantic Feature Network}
 As another model for our network, 
 the semantic features specified in Section \ref{sec:semantic} 
 were added separate vectors, so that 
-each conversation has a semantic vector. 
+each dialog has a semantic vector. 
 Note that the length of the vector depends on $k$, 
 i.e., the number of sentences in the sequences. 
 A semantic vector has $k+2$ coordinates since feature \ref{itm:between} in Section \ref{sec:semantic} requires $k-1$ coordinates 

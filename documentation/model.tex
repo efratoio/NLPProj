@@ -6,29 +6,37 @@ In this section we detail our problem model and the necessary background
 for our solution.
 
 The problem we aim to solve is related to the Document Classification task 
-\cite{DBLP:conf/naacl/YangYDHSH16,Slonim:2002:UDC:564376.564401,DBLP:journals/tkde/IsaLKR08} 
-and aims at inferring the direction the dialog is headed. 
-In our model, we consider a chat between two sides (a chatbot and a customer, two friends, etc.). 
-A chat can be modeled as a sequence of turns, 
+\cite{attention,Slonim:2002:UDC:564376.564401,DBLP:journals/tkde/IsaLKR08} 
+and tries to infer the direction the dialog is headed. 
+In our model, we consider a dialog between two sides (a chatbot and a customer, two friends, etc.). 
+A dialog can be modeled as a sequence of turns, 
 where each turn is associated with a timestamp and a speaker, and can consist of several sentences. 
 Therefore, we denote the set of all sequences of 
-such turns by $\mathcal{T}$ and define the concept of {\em sequence prefix}. 
+such turns by $\mathcal{T}$ and define the concepts of {\em sequence prefix} and {\em full dialog}. 
 
 \begin{definition}
 For $seq_1, seq_2 \in \mathcal{T}$, we say that $seq_1$ is the 
 prefix of $seq_2$ and denote by $seq_1 = pr(seq_2)$, if 
 $seq_1 = (t_1, \ldots, t_j)$, $seq_1 = (t_1, \ldots, t_j, \ldots, t_n)$, i.e., $seq_1$ is the 
-first part of $seq_2$.
+first part of $seq_2$. 
+
+We say that $seq \in \mathcal{T}$ is a full dialog if $\;\forall seq' \in \mathcal{T}. seq \neq pr(seq')\; $ 
 \end{definition}
 
-Furthermore, the chats we consider are targeted at a specific purpose 
-(whether it be convincing the customer to purchase a product, helping a friend accomplish a task, etc.), and thus can be defined by their outcome, which 
-is either success of failure (the customer buying the product, the friend accomplished the task, etc.). Thus, we define our task as a target function, intuitively predicting the outcome of the chat from its prefix.
+A {\em full dialog} is then a sequence $seq \in \mathcal{T}$ that is not a prefix 
+of any other $seq' \in \mathcal{T}$. 
+Furthermore, the full dialogs we consider are targeted at a specific purpose 
+(whether it be convincing the customer to purchase a product, helping a friend accomplish a task, etc.), 
+and thus can be defined by their outcome, which 
+is either success of failure (the customer buying the product, the friend accomplished the task, etc.). 
+This concept can be modeled as another feature associated with the full dialog, where 1 means 
+that the full dialog is successful and 0 means that it is not. 
+Thus, we define the {\em dialog-end problem} as a target function, intuitively predicting the outcome of the chat from its prefix.
 
 \begin{definition}
 Given an integer $k$ and a set of sequences of turns $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$,
-where each turn $t_i$ is associated with a timestamp and a speaker, for every sequence $seq_i\in T$, there exists another sequence $seq_j\in \mathcal{S}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ the solution to the dialog-end 
-problem is a function $f:T \to \{0,1\}$ where for each sequence $seq_i$, $f(seq_i) = 1$ iff the purpose of the chat $seq_i$ is accomplished in $seq_j$. 
+where each turn $t_i$ is associated with a timestamp and a speaker, for every sequence $seq_i\in T$, there exists a full dialog $seq_j\in \mathcal{T}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ the solution to the dialog-end 
+problem is a function $f:T \to \{0,1\}$ where for each sequence $seq_i$, $f(seq_i) = 1$ iff the $seq_j$ is successful. 
 \end{definition}
 
 Hence, our task is a binary classification 
@@ -55,11 +63,17 @@ to help capture other aspects.
 
 \paragraph*{Language Model Features}
 \amir{Efrat - Complete}
+A basic approach in this model of dialog is 
+using the semantic feature expressed in the text. 
+We use the GloVe \cite{glove} encoder to translate the words 
+into vectors and then use the network to extract sentences and 
+dialog vectors (see Section \ref{sec:network}). 
 
-\paragraph*{Semantic Features}\label{sec:semantic}
-A reasonable approach is to include features 
-extracted from the meta-data of the chat as 
-these can further enrich the our model. 
+
+
+\paragraph*{Auxiliary Semantic Features}\label{sec:semantic}
+Including additional features 
+extracted from the meta-data of the chat can further enrich the our model. 
 
 We add the following semantic features 
 to describe the general nature 
@@ -79,13 +93,13 @@ she should agree with the other side\label{itm:between}
 
 \item {\bf Total time of the chat: } the total time of the interaction \label{itm:total}
 
-\item {\bf Average turn length for each speaker: } since there are two sides to the conversation, 
+\item {\bf Average turn length for each speaker: } since there are two sides to the dialog, 
 we take the average of length of the turn for each of the two sides. 
 A turn that contains more words means a more elaborate description, which indicates 
 a good first impression\label{itm:sent}
 
 
-\item {\bf Monetary Mentions: } if the topic of budget or money is mentioned in the conversation, 
+\item {\bf Monetary Mentions: } if the topic of budget or money is mentioned in the dialog, 
 Intuitively, this feature indicates a progress in the booking process\label{itm:budget}
 
 % \item {\bf Dominant speaker: } Who is the speaker who is associated with the majority of sentences in the sequence 
