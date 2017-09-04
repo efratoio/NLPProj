@@ -58,9 +58,9 @@ In the word level, we embed each word using an embedding matrix \cite{glove}
 and use a bidirectional GRU 
 to get annotations of words by summarizing information
 from both directions for words \cite{attention}. 
-Employing both a forward GRU and a backward GRU 
+Employing both a forward and a backward GRU 
 allows the encoder to get the contextual meaning of the words. 
-For a given word $w$, 
+For a given word $w_{it}, t\in [0,T]$, 
 we concatenate the forward hidden state and
 backward hidden state to get its annotation. 
 
@@ -68,7 +68,15 @@ In the attempt of distinguishing the important
 words in the sentence from the rest, we employ word-level 
 attention. We highlight the words that most contribute 
 to the meaning of the entire sentence so that we can represent 
-a sentence vector. 
+a sentence vector $s_i$. 
+
+First, the word annotation $h_{it}$ is fed 
+through a one-layer MLP to get $u_{it}$ as a hidden representation
+of $h_{it}$. Then, the normalized importance weight of the word $\alpha_{it}$ 
+is computed as the similarity of $u_{it}$ with the word-level 
+context vector $u_w$. 
+Finally, the sentence vector $s_i$ is a weighted sum of the word annotations
+based on the weights. 
 
 \begin{equation*}
 	u_{it} = tanh(W_w h_{it} + b_w)
@@ -82,19 +90,44 @@ a sentence vector.
 	s_i = \sum_{t} \alpha_{it} h_{it}
 \end{equation*}
 
+We use a similar mechanism (including the forward and backward 
+GRU, and the attention layer) for the sentence-level vectors, 
+for the sentences appearing in each turn in the sequence $seq_i$. 
+The output of this stage is a turn vector. 
 
-\subsection{Semantic Feature Network}
-As another model for our network, 
-the semantic features specified in Section \ref{sec:semantic} 
-were added separate vectors, so that 
-each dialog has a semantic vector. 
+Once we have the representation of all the turns in $seq_i$, 
+we again use a GRU to convert then into a sequence vector $v$. 
+
+\subsection{Semantic Features}
+The additional semantic features specified in Section \ref{sec:semantic} 
+are added as coordinates in the sequence vector $v$, so that 
+each vector also contains semantic features. 
+All features are normalized by taking the largest 
+value in each coordinate across all sequences and dividing 
+all values in that coordinate by this value.  
 Note that the length of the vector depends on $k$, 
 i.e., the number of sentences in the sequences. 
 A semantic vector has $k+2$ coordinates since feature \ref{itm:between} in Section \ref{sec:semantic} requires $k-1$ coordinates 
 and there are $3$ additional features. 
-These vectors are the input for a fully-connected neural 
-network with 2 hidden layers, with 12 and 8 neurons, respectively. 
-As this is a binary classification, the network has an output layer of size 1. 
-For both hidden layers we have used the rectified linear unit as the activation 
-function and for the output we applied the sigmoid function.
+% These vectors are the input for a fully-connected neural 
+% network with 2 hidden layers, with 12 and 8 neurons, respectively. 
+% As this is a binary classification, the network has an output layer of size 1. 
+% For both hidden layers we have used the rectified linear unit as the activation 
+% function and for the output we applied the sigmoid function.
+
+
+\subsection{Classification}
+After obtaining the abstract representation of the sequences, 
+we use a layer of two neurons to classify the sequences and 
+generate a function approximating the solution (Definition \ref{def:target}) 
+
+\begin{equation*}
+	p = softmax(W_c v + b_c)
+\end{equation*}
+
+Negative log-likelihood was used to correct labels ($j$ is the label of sequence $i$): 
+
+\begin{equation*}
+	L = - \sum_{i} \log{p_{ij}}
+\end{equation*}
 

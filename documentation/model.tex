@@ -25,22 +25,32 @@ We say that $seq \in \mathcal{T}$ is a full dialog if $\;\forall seq' \in \mathc
 
 A {\em full dialog} is then a sequence $seq \in \mathcal{T}$ that is not a prefix 
 of any other $seq' \in \mathcal{T}$. 
-Furthermore, the full dialogs we consider are targeted at a specific purpose 
+We then define an instance of {\em dialog-end}. 
+
+\begin{definition}\label{def:target}
+Given an integer $k$, an instance of dialog-end is a set of sequences of turns $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$ such that 
+(1) each turn $t_i$ is associated with a timestamp and a speaker, (2) for every sequence $seq_i\in T$, there exists a full dialog $seq_j\in \mathcal{T}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ for all $1\leq i \leq n$.
+\end{definition}
+
+The full dialogs we consider are targeted at a specific purpose 
 (whether it be convincing the customer to purchase a product, helping a friend accomplish a task, etc.), 
 and thus can be defined by their outcome, which 
 is either success of failure (the customer buying the product, the friend accomplished the task, etc.). 
 This concept can be modeled as another feature associated with the full dialog, where 1 means 
 that the full dialog is successful and 0 means that it is not. 
-Thus, we define the {\em dialog-end problem} as a target function, intuitively predicting the outcome of the chat from its prefix.
 
-\begin{definition}
-Given an integer $k$ and a set of sequences of turns $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$,
-where each turn $t_i$ is associated with a timestamp and a speaker, for every sequence $seq_i\in T$, there exists a full dialog $seq_j\in \mathcal{T}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ the solution to the dialog-end 
-problem is a function $f:T \to \{0,1\}$ where for each sequence $seq_i$, $f(seq_i) = 1$ iff the $seq_j$ is successful. 
-\end{definition}
+% Thus, we define the {\em dialog-end problem} as a target function, intuitively predicting the outcome of the chat from its prefix.
 
-Hence, our task is a binary classification 
-problem of finding the the function $f$.  
+% \begin{definition}\label{def:target}
+% Given an integer $k$ and a set of sequences of turns $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$,
+% where each turn $t_i$ is associated with a timestamp and a speaker, for every sequence $seq_i\in T$, there exists a full dialog $seq_j\in \mathcal{T}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ the solution to the dialog-end 
+% problem is a function $f:T \to \{0,1\}$ where for each sequence $seq_i$, $f(seq_i) = 1$ iff the $seq_j$ is successful. 
+% \end{definition}
+
+Our task is then a binary classification 
+problem of finding a function that predicts the outcome 
+of a full dialog $seq_j$ from its prefix $seq_i = pr(seq_j)$. 
+
 Note that for every choice of $k$ we get a different 
 version of the problem and where a larger $k$ leads 
 to a supposedly easier problem, since each sequence contains 
