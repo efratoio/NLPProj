@@ -32,6 +32,18 @@ Given an integer $k$, an instance of dialog-end is a set of sequences of turns $
 (1) each turn $t_i$ is associated with a timestamp and a speaker, (2) for every sequence $seq_i\in T$, there exists a full dialog $seq_j\in \mathcal{T}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ for all $1\leq i \leq n$.
 \end{definition}
 
+\begin{example}
+Consider for example the sequence of sentences:
+
+user: Hi. I need to book a vacation to Long Beach between August 25 and September 3. Departure is from Paris
+wizard: Would you like to depart Paris on September 6th?
+user: Preferably by the 3rd. Is there anything available?
+wizard: Sorry, looks like there is nothing available from Paris to Long Beach on September 3rd.
+user: I'm not quite sure I understand, is there anything available leaving Long Beach to go to Paris between August 25 and September 3rd?
+wizard: Would you like to depart Paris on September 6th?
+user: No. I would like to leave Long Beach around the 25th of August to go to Paris for some reason. What is so confusing about that!?
+\end{example}
+
 The full dialogs we consider are targeted at a specific purpose 
 (whether it be convincing the customer to purchase a product, helping a friend accomplish a task, etc.), 
 and thus can be defined by their outcome, which 
