@@ -3,26 +3,92 @@
 
 \subsection{Experimental Setup}
 We have used the Frames dataset \cite{frames} as 
-our benchmark. Containing 1369 chats between 
+our benchmark. Containing 1369 dialogs between 
 a chatbot and users interested in booking a vacations, 
-it consists the entire chats along with its semantic features. 
-Each chat is assigned a tag of 1 if the user has booked a vacation 
-in the chat and 0 otherwise. 
+it consists the entire dialogs along with its semantic features. 
+Each dialog is assigned a tag of 1 if the user has booked a vacation 
+in the dialog and 0 otherwise. 0.61\% of the dialogs end with a user 
+booking a vacation. 
 
-Since originally this dataset was not created for the dialog-ending problem, 
-we had tagged all chats automatically, using a other features that exist 
+Since originally this dataset was not created for the dialog-end problem, 
+we had tagged all dialogs automatically, using a other features that exist 
 in the dataset, namely sentences that include a ``book'' action. 
-
-We have divided the dataset into 1000 training chats and 300 test chats.
 
 Starting from the word embeddings, we have used the 
 NLTK package \cite{DBLP:conf/acl/Bird06} and the already trained network GloVe \cite{glove} 
 to embed the words in each sentence to vectors using the the Keras package \cite{chollet2015}. 
 We then use Keras to build our hierarchal network, train it and test it on the 
 dataset, with the exception of the attention layers applied on both the word and sentence 
-levels, implementing the concept presented in \cite{attention,tc}.
+levels, implementing the concepts presented in \cite{attention,tc}. 
+The hyper-parameters in our experiments are as follows. 
+Word embedding dimension is set to 50 \amir{verify} and the 
+GRU dimension is set to 100 \amir{verify}. 
 
+We have divided the dataset into 1000 training dialogs and 300 test dialogs 
+(some of the dialogs were too short to be included, containing only 3 or less sentences).
+Training was performed with a mini-batch of size 64 \amir{verify}, 
+and 64 \amir{verify} epochs.
+Our network used SGD with a momentum of 0.9 \amir{verify} to train.
+
+\subsection{Baselines}
+To our knowledge, no solution for the 
+dialog-end problem has been previously proposed. To nevertheless
+gain insight on alternatives, we have tested four 
+options: 
+\begin{enumerate}
+	\item Standard bag-of-words implementation using only the text.\label{b:1}
+	\item Character-level CNN model using only the text \cite{ZhangZL15}.\label{b:2}
+	\item Bidirectional RNN with LSTM whose input included only the semantic features detailed in Section \ref{sec:semantic}.\label{b:3}
+	\item The hierarchical attention network for document classification \cite{attention} without the semantic features (again, using only the text), with and without attention.\label{b:4}
+\end{enumerate}
+
+The latter two baselines are in fact components 
+of our network so comparing their performance to 
+the network we have designed can lead to insights 
+on the amount of improvement given by combining them. \amir{is there an improvement?}
+% (1) standard bag-of-words implementation using only 
+% the text, (2) A character-level CNN model using only the text \cite{ZhangZL15}, (3) a deep neural network whose input included 
+% only the semantic features, and (4) the original network from \cite{attention} 
+% without the semantic features (again, using only the text). 
 
 
 \subsection{Results}
-\amir{Amir and Efrat - complete}
+To examine the usefulness of our approach and 
+test the effectiveness of the different components, 
+we have evaluated the different baselines on the Frames 
+dataset \cite{frames} and examined the two main components of our network separately 
+and with the values $k=4$, $k=8$, and when the input is the full dialog (recall Definition \ref{def:target}). 
+
+
+
+
+\paragraph*{Baselines \ref{b:1}, \ref{b:2}}
+
+
+
+\begin{table*}[!htb]
+    \centering\small
+    \begin{tabular}{| c | c | c | c | l | l |}
+        \hline \textbf{Solution} & \textbf{$k=4$} & \textbf{$k=8$} & \textbf{Full Dialog} \\
+        \hline Baseline \ref{b:3} & 62 & 75 & 76 \\
+        \hline Baseline \ref{b:4} without attention  & 65 & 69 & 86 \\
+        \hline Baseline \ref{b:4} with attention  & 65 & 70 & 91 \\
+        \hline This Project & TBD & TBD & TBD \\
+        \hline
+    \end{tabular}
+    \caption{Precision in Dialog-End Classification}\label{tbl:resComps}
+\end{table*}
+
+\paragraph*{Baselines \ref{b:3}, \ref{b:4}}
+The results for baselines \ref{b:3}, \ref{b:4} are shown in Table \ref{tbl:resComps}. 
+Both baselines show an improvement in performance with the increase of $k$. 
+Since the hierarchical network analyzes the contexts and models the text itself, 
+it is much more affected by the addition of new text than the semantic RNN (baseline \ref{b:3}) where more semantic features 
+do not necessarily imply novel information. 
+Thus, the semantic features based approach (baseline \ref{b:3}) is considerably 
+less sensitive to an increase in $k$ than the hierarchical network. 
+Further note that for smaller values of $k$, the attention mechanism 
+does not increase performance by a major factor (1\% at most). This again stems from 
+the mechanism's need for a larger volume of text. As evidence, there is 
+an improvement of 5\% over the full dialogs. 
+% \amir{Amir and Efrat - complete}
