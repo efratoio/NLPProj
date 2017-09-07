@@ -33,7 +33,7 @@ Given an integer $k$, an instance of dialog-end is a set of sequences of turns $
 \end{definition}
 
 \begin{example}\label{ex:seq}
-Here is an example of a sequence of turns from a chat where $k=6$:
+Consider the following sequence of turns from one chat in the Frames dataset \cite{frames}, where a chatbot tries to assist the user in booking a vacation. Here, $k=6$:
 \begin{table}[!htb]
 \centering
 \begin{tabular}{| c | c | l |}
@@ -77,12 +77,11 @@ problem of finding a function that predicts the outcome
 of a full dialog $seq_j$ from its prefix $seq_i = pr(seq_j)$. 
 
 Note that for every choice of $k$ we get a different 
-version of the problem and where a larger $k$ leads 
-to a supposedly easier problem, since each sequence contains 
-more information from the chat, until the elements of $T$ 
-are the entire chat. The case where the entire chats are 
-given can be interpreted as challenge in the Dialog Act \cite{cs-CL-0006023,DBLP:conf/icassp/JiB05,DBLP:conf/coling/WermterL96}
-field and can be solved using similar approaches, since we 
+version of the problem and a larger $k$ leads 
+to a supposedly easier problem, since a larger sequence contains 
+more information from the dialog, until the elements of $T$ 
+are full dialogs. When the latter case is 
+given, this can be interpreted as challenge in the Dialog Act field \cite{cs-CL-0006023,DBLP:conf/icassp/JiB05,DBLP:conf/coling/WermterL96} and can be solved using similar approaches, since we 
 can tag all actions and search for the action signaling the task's completion. 
 In our setting, however, we assume that $k$ is smaller than the dialog 
 length, thus presenting a different challenge, requiring a somewhat different approach. 
