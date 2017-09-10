@@ -7,8 +7,8 @@ our benchmark. Containing 1369 dialogs between
 a chatbot and users interested in booking a vacations, 
 it consists the entire dialogs along with its semantic features. 
 Each dialog is assigned a tag of 1 if the user has booked a vacation 
-in the dialog and 0 otherwise. 0.61\% of the dialogs end with a user 
-booking a vacation. 
+in the dialog and 0 otherwise. 61\% of the dialogs end with a user 
+booking a vacation and the average length of a dialog was 14 turns. 
 
 Since originally this dataset was not created for the dialog-end problem, 
 we had tagged all dialogs automatically, using a other features that exist 
@@ -40,6 +40,8 @@ options:
 	\item Character-level CNN model using only the text \cite{ZhangZL15}.\label{b:2}
 	\item Bidirectional RNN with LSTM whose input included only the semantic features detailed in Section \ref{sec:semantic}.\label{b:3}
 	\item The hierarchical attention network for document classification \cite{attention} without the semantic features (again, using only the text), with and without attention.\label{b:4}
+	\item The hierarchical network for document classification \cite{attention} {\em without} the semantic features, with the additional turn layer, and without attention.\label{b:5}
+	\item The hierarchical network for document classification \cite{attention} {\em with} the semantic features, with the additional turn layer, and without attention.\label{b:6}
 \end{enumerate}
 
 The latter two baselines are in fact components 
@@ -59,29 +61,33 @@ we have evaluated the different baselines on the Frames
 dataset \cite{frames} and examined the two main components of our network separately 
 and with the values $k=4$, $k=8$, and when the input is the full dialog (recall Definition \ref{def:target}). 
 
-
-
-
-\paragraph*{Baselines \ref{b:1}, \ref{b:2}}
-
-
-
 \begin{table*}[!htb]
     \centering\small
     \begin{tabular}{| c | c | c | c | l | l |}
         \hline \textbf{Solution} & \textbf{$k=4$} & \textbf{$k=8$} & \textbf{Full Dialog} \\
+        \hline Baseline \ref{b:1} & TBD & TBD & TBD \\
+        \hline Baseline \ref{b:2} & TBD & TBD & TBD \\
         \hline Baseline \ref{b:3} & 62 & 75 & 76 \\
         \hline Baseline \ref{b:4} without attention  & 65 & 69 & 86 \\
         \hline Baseline \ref{b:4} with attention  & 65 & 70 & 91 \\
+        \hline Baseline \ref{b:5} & 67 & 72 & 88 \\
+        \hline Baseline \ref{b:6} & 61 & 72 & 88 \\
         \hline This Project & TBD & TBD & TBD \\
         \hline
     \end{tabular}
     \caption{Precision in Dialog-End Classification}\label{tbl:resComps}
 \end{table*}
 
+
+\paragraph*{Baselines \ref{b:1}, \ref{b:2}}
+
+
+
+
+
 \paragraph*{Baselines \ref{b:3}, \ref{b:4}}
-The results for baselines \ref{b:3}, \ref{b:4} are shown in Table \ref{tbl:resComps}. 
-Both baselines show an improvement in performance with the increase of $k$. 
+The results for baselines \ref{b:3}, \ref{b:4}, \ref{b:5}, \ref{b:6} are shown in Table \ref{tbl:resComps}. 
+All baselines show an improvement in performance with the increase of $k$. 
 Since the hierarchical network analyzes the contexts and models the text itself, 
 it is much more affected by the addition of new text than the semantic RNN (baseline \ref{b:3}) where more semantic features 
 do not necessarily imply novel information. 
@@ -91,4 +97,8 @@ Further note that for smaller values of $k$, the attention mechanism
 does not increase performance by a major factor (1\% at most). This again stems from 
 the mechanism's need for a larger volume of text. As evidence, there is 
 an improvement of 5\% over the full dialogs. 
+We can see that adding the additional layer for turns assists the network in the 
+classification from the comparison between baselines \ref{b:4} and \ref{b:5} for $k=4,8$. 
+Interestingly, the semantic features do not seem to improve the performance 
+when they are add to the turn vector.
 % \amir{Amir and Efrat - complete}
