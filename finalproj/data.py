@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-
+import semantic
 import os
 import json
 import numpy as np
@@ -44,6 +44,7 @@ def gen_chat_data():
         chats[filename[:-5]] = {}
         chats[filename[:-5]]["turns"] = turns
         chats[filename[:-5]]["label"] = d[filename[:-5]]
+        chats[filename[:-5]]["chat"] = chat
     return chats
 
 
@@ -57,9 +58,12 @@ def create_data(config,chats):
     chats_txt=[]
     vecs=[]
     turns=[]
-
+    g = None
+    if config["SEMANTIC"]:
+        g = semantic.load_graph()
     if config["VANILA"]:
         for idx in chats.keys():
+
             labels.append(chats[idx]["label"])
             if config["PARTIAL"]:
                 text = "\n".join([x["text"] for x in chats[idx]["turns"][:config["LENGTH"]]])
@@ -89,6 +93,10 @@ def create_data(config,chats):
 
     else:
         for idx in chats.keys():
+            sem_vec = None
+            if config["SEMANTIC"]:
+                sem_vec = semantic.prepare_frames_vector(chats[idx]["chat"],g)
+
             labels.append(chats[idx]["label"])
             if config["PARTIAL"]:
                 text = "\n".join([x["text"] for x in chats[idx]["turns"][:config["LENGTH"]]])
@@ -97,8 +105,16 @@ def create_data(config,chats):
                 text = "\n".join([x["text"] for x in chats[idx]["turns"]])
             turns=[]
             vec=[]
-            for turn in chats[idx]["turns"]:
-                vec.append([len(turn["text"]),turn["ti"],0 if turn["author"].lower()=="wizard" else 1])
+            for i,turn in enumerate(chats[idx]["turns"]):
+                v = []
+                if config["PROPS"]:
+                    v.extend([len(turn["text"]),turn["ti"],0 if turn["author"].lower()=="wizard" else 1])
+                if config["SEMANTIC"]:
+                    v.extend(sem_vec[i])
+
+
+                vec.append(v)
+
                 texts.append(turn["text"])
                 sentences = tokenize.sent_tokenize(turn["text"])
                 turns.append(sentences)
@@ -134,8 +150,8 @@ def prepare_datasets(config,chats):
     data,labels,vecs,tokenizer = create_data(config,chats)
 
     aux_data=[]
-    if config["PROPS"]:
-        aux_data = np.zeros((data.shape[0], config["MAX_TURNS"],3), dtype='float32')
+    if config["PROPS"] or config["SEMANTIC"]:
+        aux_data = np.zeros((data.shape[0], config["MAX_TURNS"],config["VEC_SIZE"]), dtype='float32')
         for i,vec in enumerate(vecs):
             if config["PARTIAL"]:
                 for j,v in enumerate(vec[:config["LENGTH"]]):

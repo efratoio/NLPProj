@@ -1,6 +1,6 @@
 import data
 import network
-import sys
+import sys, traceback
 from os import listdir, path
 from contextlib import redirect_stdout
 
@@ -34,7 +34,6 @@ def evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test):
 def run_net(config,word_index,x_train, y_train,x_val, y_val,x_test,y_test):
 	model = network.create_network(config,word_index)
 	res = evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test)
-	print(str(net)+"\n")
 	print(str(res)+"\n")
 
   
@@ -58,6 +57,7 @@ for file_name in listdir("./configurations"):
 				run_network(config)
 			except:
 				exc_type, exc_value, exc_traceback = sys.exc_info()
+				traceback.print_exc(file=sys.stdout)
 				print("Unexpected error: %s %s %s"%(exc_type, exc_value, exc_traceback))
 
 

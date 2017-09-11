@@ -89,8 +89,10 @@ def date_difference(s, t):
     return abs((s_m*30+int(s_d)) - (t_m*30+int(t_d)))
 
 def prepare_frames_vector(chat,g):
+
     dst_city = or_city = str_date = end_date = ""
     or_city_diff = dst_city_diff = str_date_diff = end_date_diff = 0
+    final_vector=[]
     for t in chat["turns"]:
         if "text" in t:
             prev_or_city = or_city
@@ -120,11 +122,10 @@ def prepare_frames_vector(chat,g):
             if len(prev_end_date) > 1:
                 end_date_diff = date_difference(end_date, prev_end_date)
 
-            print()
-            print(t["author"])
-            print(t["text"])                
+                         
             print(or_city_diff, dst_city_diff, str_date_diff, end_date_diff)
             
-            final_vector.append([t["author"], t["text"], or_city_diff+dst_city_diff, str_date_diff+end_date_diff])
-    
-    return final_vect
+            final_vector.append([t["author"], or_city_diff+dst_city_diff, str_date_diff+end_date_diff])
+    print("final vector len",len(final_vector))
+    print("turn len",len(chat["turns"]))
+    return final_vector
