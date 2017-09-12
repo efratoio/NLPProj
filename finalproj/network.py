@@ -29,7 +29,6 @@ from keras.models import Model
 from keras import backend as K
 from keras.engine.topology import Layer, InputSpec
 from keras import initializers
-import theano
 import functools
 import nltk
 nltk.download('punkt')
