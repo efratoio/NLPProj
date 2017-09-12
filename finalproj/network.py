@@ -1,4 +1,6 @@
 
+# coding: utf-8
+
 import numpy as np
 # import pandas as pd
 import _pickle as cPickle
@@ -86,6 +88,7 @@ def create_network(config,word_index):
 		l_lstm = create_attention(config,l_lstm)
 	
 	sentEncoder = Model(sentence_input, l_lstm)
+	auxiliary_input=None
 	turn_input = Input(shape=(config["MAX_SENTS"],config["MAX_SENT_LENGTH"]), dtype='int32')
 	turn_encoder = TimeDistributed(sentEncoder)(turn_input)
 	l_lstm_sent = Bidirectional(LSTM(config["RNN_DIM"],return_sequences=config["VANILA_ATTENTION"]))(turn_encoder)
@@ -109,17 +112,21 @@ def create_network(config,word_index):
 		chats_encoder = chats_encoder_layer(chats_input)
 
 		if config["PROPS"]:
-			auxiliary_input = Input(shape=(config["MAX_TURNS"],3,), name='aux_input')
+			auxiliary_input = Input(shape=(config["MAX_TURNS"],config["VEC_SIZE"],), name='aux_input')
 			last_layer = Bidirectional(LSTM(config["RNN_DIM"],return_sequences=config["TURN_ATTENTION"]))(concatenate([chats_encoder, auxiliary_input]))
-
-		last_layer = Bidirectional(LSTM(config["RNN_DIM"],return_sequences=config["TURN_ATTENTION"]))(chats_encoder)
+		else:
+			last_layer = Bidirectional(LSTM(config["RNN_DIM"],return_sequences=config["TURN_ATTENTION"]))(chats_encoder)
 
 
 		if config["TURN_ATTENTION"]:
 			last_layer = create_attention(config,last_layer)
 
 		preds = Dense(2, activation='softmax')(last_layer)
-		model = Model(chats_input, preds)
+		if config["PROPS"]:
+			model = Model([chats_input,auxiliary_input], preds)
+		else:
+			model = Model(chats_input, preds)
+
 	model.compile(loss='categorical_crossentropy',optimizer='rmsprop',metrics=['acc'])
 	print(model.summary())
 	return model

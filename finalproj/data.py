@@ -95,6 +95,7 @@ def create_data(config,chats):
         for idx in chats.keys():
             sem_vec = None
             if config["SEMANTIC"]:
+                print(idx)
                 sem_vec = semantic.prepare_frames_vector(chats[idx]["chat"],g)
 
             labels.append(chats[idx]["label"])
