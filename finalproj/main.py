@@ -1,3 +1,7 @@
+
+# coding: utf-8
+
+
 import data
 import network
 import sys, traceback
