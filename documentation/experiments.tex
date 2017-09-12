@@ -33,25 +33,26 @@ Our network used SGD with a momentum of 0.9 \amir{verify} to train.
 \subsection{Baselines}
 To our knowledge, no solution for the 
 dialog-end problem has been previously proposed. To nevertheless
-gain insight on alternatives, we have tested four 
-options: 
-\begin{enumerate}
-	\item Standard bag-of-words implementation using only the text.\label{b:1}
-	\item Character-level CNN model using only the text \cite{ZhangZL15}.\label{b:2}
-	\item Bidirectional RNN with LSTM whose input included only the semantic features detailed in Section \ref{sec:semantic}.\label{b:3}
-	\item The hierarchical attention network for document classification \cite{attention} without the semantic features (again, using only the text), with and without attention.\label{b:4}
-	\item The hierarchical network for document classification \cite{attention} {\em without} the semantic features, with the additional turn layer, and without attention.\label{b:5}
-	\item The hierarchical network for document classification \cite{attention} {\em with} the semantic features, with the additional turn layer, and without attention.\label{b:6}
-\end{enumerate}
+gain insight on alternatives, we have tested several configurations 
+of the network. 
+The different configurations of the network include: 
+(1) adding the additional turn-level encoding, 
+(2) including word and sentence level attention, and 
+(3) varying $k$.
 
-The latter two baselines are in fact components 
-of our network so comparing their performance to 
-the network we have designed can lead to insights 
-on the amount of improvement given by combining them. \amir{is there an improvement?}
-% (1) standard bag-of-words implementation using only 
-% the text, (2) A character-level CNN model using only the text \cite{ZhangZL15}, (3) a deep neural network whose input included 
-% only the semantic features, and (4) the original network from \cite{attention} 
-% without the semantic features (again, using only the text). 
+% \begin{enumerate}
+% 	\item Standard bag-of-words implementation using only the text.\label{b:1}
+% 	\item Character-level CNN model using only the text \cite{ZhangZL15}.\label{b:2}
+% 	\item Bidirectional RNN with LSTM whose input included only the semantic features detailed in Section \ref{sec:semantic}.\label{b:3}
+% 	\item The hierarchical attention network for document classification \cite{attention} without the semantic features (again, using only the text), with and without attention.\label{b:4}
+% 	\item The hierarchical network for document classification \cite{attention} {\em without} the semantic features, with the additional turn layer, and without attention.\label{b:5}
+% 	\item The hierarchical network for document classification \cite{attention} {\em with} the semantic features, with the additional turn layer, and without attention.\label{b:6}
+% \end{enumerate}
+
+% The latter two baselines are in fact components 
+% of our network so comparing their performance to 
+% the network we have designed can lead to insights 
+% on the amount of improvement given by combining them. \amir{is there an improvement?}
 
 
 \subsection{Results}
@@ -61,36 +62,54 @@ we have evaluated the different baselines on the Frames
 dataset \cite{frames} and examined the two main components of our network separately 
 and with the values $k=4$, $k=8$, and when the input is the full dialog (recall Definition \ref{def:target}). 
 
+% \begin{table*}[!htb]
+%     \centering\small
+%     \begin{tabular}{| c | c | c | c | l | l |}
+%         \hline \textbf{Solution} & \textbf{$k=4$} & \textbf{$k=8$} & \textbf{Full Dialog} \\
+%         \hline Baseline \ref{b:1} & TBD & TBD & TBD \\
+%         \hline Baseline \ref{b:2} & TBD & TBD & TBD \\
+%         \hline Baseline \ref{b:3} & 62 & 75 & 76 \\
+%         \hline Baseline \ref{b:4} without attention  & 65 & 69 & 86 \\
+%         \hline Baseline \ref{b:4} with attention  & 65 & 70 & 91 \\
+%         \hline Baseline \ref{b:5} & 67 & 72 & 88 \\
+%         \hline Baseline \ref{b:6} & 61 & 72 & 88 \\
+%         \hline This Project & TBD & TBD & TBD \\
+%         \hline
+%     \end{tabular}
+%     \caption{Precision in Dialog-End Classification}\label{tbl:resComps}
+% \end{table*}
+
+
 \begin{table*}[!htb]
     \centering\small
-    \begin{tabular}{| c | c | c | c | l | l |}
-        \hline \textbf{Solution} & \textbf{$k=4$} & \textbf{$k=8$} & \textbf{Full Dialog} \\
-        \hline Baseline \ref{b:1} & TBD & TBD & TBD \\
-        \hline Baseline \ref{b:2} & TBD & TBD & TBD \\
-        \hline Baseline \ref{b:3} & 62 & 75 & 76 \\
-        \hline Baseline \ref{b:4} without attention  & 65 & 69 & 86 \\
-        \hline Baseline \ref{b:4} with attention  & 65 & 70 & 91 \\
-        \hline Baseline \ref{b:5} & 67 & 72 & 88 \\
-        \hline Baseline \ref{b:6} & 61 & 72 & 88 \\
-        \hline This Project & TBD & TBD & TBD \\
+    \begin{tabular}{| c | c | c | c | c | c |}
+        \hline \textbf{Turn Layer} & {\bf Attention On Words and Sents} & \textbf{Attention On Turns} & \textbf{k} & \textbf{Accuracy} \\
+        \hline No & No & No & 4 & 67.7 \\
+        \hline No & Yes & No & 4 & 66.9 \\
+        \hline Yes & No & No & 4 & 69.2 \\
+        \hline Yes & Yes & No & 4 & 66.1 \\
+        \hline Yes & Yes & Yes & 4 & 62.2 \\
+        \hline No & No & No & 8 & 69.8 \\
+        \hline No & Yes & No & 8 & 73.4 \\
+        \hline Yes & No & No & 8 & TBD \\
+        \hline Yes & Yes & No & 8 & 57.2 \\
+        \hline Yes & Yes & Yes & 8 & 67.1 \\
+        \hline No & No & No & full dialog & 84.6 \\
+        \hline No & Yes & No & full dialog & 84.9 \\
+        \hline Yes & No & No & full dialog & 89 \\
+        \hline Yes & Yes & No & full dialog & 92.3 \\
+        \hline Yes & Yes & Yes & full dialog & 89.3 \\
+        
         \hline
     \end{tabular}
-    \caption{Precision in Dialog-End Classification}\label{tbl:resComps}
+    \caption{Accuracy in Dialog-End Classification}\label{tbl:resComps}
 \end{table*}
 
-
-\paragraph*{Baselines \ref{b:1}, \ref{b:2}}
-
-
-
-
-
-\paragraph*{Baselines \ref{b:3}, \ref{b:4}}
-The results for baselines \ref{b:3}, \ref{b:4}, \ref{b:5}, \ref{b:6} are shown in Table \ref{tbl:resComps}. 
+The results for the different structures of the network are shown in Table \ref{tbl:resComps}. 
 All baselines show an improvement in performance with the increase of $k$. 
-Since the hierarchical network analyzes the contexts and models the text itself, 
-it is much more affected by the addition of new text than the semantic RNN (baseline \ref{b:3}) where more semantic features 
-do not necessarily imply novel information. 
+Since the hierarchical network without the turn-layer analyzes the contexts and models the text itself, 
+it is much more affected by the addition of new text than other structures, where more semantic features 
+do not necessarily imply novel information \amir{nake sure}. 
 Thus, the semantic features based approach (baseline \ref{b:3}) is considerably 
 less sensitive to an increase in $k$ than the hierarchical network. 
 Further note that for smaller values of $k$, the attention mechanism 
@@ -101,4 +120,27 @@ We can see that adding the additional layer for turns assists the network in the
 classification from the comparison between baselines \ref{b:4} and \ref{b:5} for $k=4,8$. 
 Interestingly, the semantic features do not seem to improve the performance 
 when they are add to the turn vector.
-% \amir{Amir and Efrat - complete}
+
+
+% \paragraph*{Baselines \ref{b:1}, \ref{b:2}}
+
+
+
+
+
+% \paragraph*{Baselines \ref{b:3}, \ref{b:4}}
+% The results for baselines \ref{b:3}, \ref{b:4}, \ref{b:5}, \ref{b:6} are shown in Table \ref{tbl:resComps}. 
+% All baselines show an improvement in performance with the increase of $k$. 
+% Since the hierarchical network analyzes the contexts and models the text itself, 
+% it is much more affected by the addition of new text than the semantic RNN (baseline \ref{b:3}) where more semantic features 
+% do not necessarily imply novel information. 
+% Thus, the semantic features based approach (baseline \ref{b:3}) is considerably 
+% less sensitive to an increase in $k$ than the hierarchical network. 
+% Further note that for smaller values of $k$, the attention mechanism 
+% does not increase performance by a major factor (1\% at most). This again stems from 
+% the mechanism's need for a larger volume of text. As evidence, there is 
+% an improvement of 5\% over the full dialogs. 
+% We can see that adding the additional layer for turns assists the network in the 
+% classification from the comparison between baselines \ref{b:4} and \ref{b:5} for $k=4,8$. 
+% Interestingly, the semantic features do not seem to improve the performance 
+% when they are add to the turn vector.

@@ -99,7 +99,8 @@ Once we have the representation of all the turns in $seq_i$,
 we again use a GRU to convert then into a sequence vector $v$. 
 
 \subsection{Semantic Features}
-The additional semantic features specified in Section \ref{sec:semantic} 
+The additional semantic features specified 
+in Sections \ref{sec:sem}, \ref{sec:kb} 
 are added as coordinates in the sequence vector $v$, so that 
 each vector also contains semantic features. 
 All features are normalized by taking the largest 
@@ -107,14 +108,19 @@ value in each coordinate across all sequences and dividing
 all values in that coordinate by this value.  
 Note that the length of the vector depends on $k$, 
 i.e., the number of sentences in the sequences. 
-A semantic vector has $k+2$ coordinates since feature \ref{itm:between} in Section \ref{sec:semantic} requires $k-1$ coordinates 
-and there are $3$ additional features. 
+A semantic vector has $2k+3$ coordinates since feature \ref{itm:between} in Section \ref{sec:semantic} requires $k-1$ coordinates, and 
+feature \ref{itm:sent} requires $k$ coordinates. 
+features \ref{itm:total}, \ref{itm:budget} requires a single coordinate each, 
+and the knowledge based features are summarized into $2$ additional coordinates, 
+one for geographical similarity and the other for time similarity during the sequence. 
+
+This vector is then appended to the vector representating the encoded text in the sequence, generated through the model mentioned above. 
 % These vectors are the input for a fully-connected neural 
 % network with 2 hidden layers, with 12 and 8 neurons, respectively. 
 % As this is a binary classification, the network has an output layer of size 1. 
 % For both hidden layers we have used the rectified linear unit as the activation 
 % function and for the output we applied the sigmoid function.
-\amir{Slava - complete}
+
 
 \subsection{Classification}
 After obtaining the abstract representation of the sequences, 
