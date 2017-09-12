@@ -139,5 +139,17 @@ Intuitively, this feature indicates a progress in the booking process\label{itm:
 % \item {\bf Dominant speaker: } Who is the speaker who is associated with the majority of sentences in the sequence 
 \end{enumerate} 
 
-\subsection{Ontology}
-\amir{Slava - talk about semantic difference between sentences}
+\subsection{Knowledge Base Features}
+% \amir{Slava - talk about semantic difference between sentences}
+We use an external knowledge to add more semantic features to our model. Specifically, we use a publically available ontology (DBPedia \cite{dbpedia}).
+Employing the domain knowledge of our dialog (users trying to book a vacation), we attach three additional geographical-based features to each turn in the dialog. These are added for each of the requested geographical locations (by user) and the returned locations. These feature are: 
+
+\begin{enumerate}
+\item Whether the cities are near-by.
+\item Whether the cities are from the same country.
+\item Whether the cities are from the same continent.
+\end{enumerate}
+
+We use theses 3 features based on travel experince - usually if people want to fly to a city, say Katowice and being proposed a flight to Krakow it can be fine (both from the same country and are nearby). On other hand, Warsaw is not so near by, but still in the same country, so definetly it is better to have a flight to Krakow. Finally, flight to Prague is even less comfortable.
+In addition to ontological distance, we added time distance. We measure it as the difference in days between the requested and proposed dates. Usually people plan vacations and business meetings, and can have a one or two days changes in the dates, but change of a week or more of the flight means less chances to be booked.
+Both features based on experts knowledge about nowdays trends and reality about flight (especially with the new low-cost companies which has flight on specific dates, to certain places).
