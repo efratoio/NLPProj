@@ -1,8 +1,9 @@
 {
 	"VANILA":false,
-	"VANILA_ATTENTION":true,
-	"TURN_ATTENTION":false,
+	"VANILA_ATTENTION":false,
+	"TURN_ATTENTION":true,
 	"PROPS":true,
+	"SEMANTIC":false,
 	"PARTIAL":false,
 	"LENGTH":0,
 	"EPOCHS":20,

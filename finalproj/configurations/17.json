@@ -4,6 +4,7 @@
 	"TURN_ATTENTION":false,
 	"PROPS":true,
 	"PARTIAL":true,
+	"SEMANTIC":false,
 	"LENGTH":4,
 	"EPOCHS":20,
 	"BATCH_SIZE":20,

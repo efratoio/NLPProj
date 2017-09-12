@@ -1,9 +1,10 @@
 {
 	"VANILA":false,
-	"VANILA_ATTENTION":true,
+	"VANILA_ATTENTION":false,
 	"TURN_ATTENTION":true,
 	"PROPS":true,
 	"PARTIAL":true,
+	"SEMANTIC":true,
 	"LENGTH":8,
 	"EPOCHS":20,
 	"BATCH_SIZE":20,

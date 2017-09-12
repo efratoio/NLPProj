@@ -3,6 +3,7 @@
 	"VANILA_ATTENTION":false,
 	"TURN_ATTENTION":false,
 	"PROPS":true,
+	"SEMANTIC":false,
 	"PARTIAL":false,
 	"LENGTH":0,
 	"EPOCHS":20,
