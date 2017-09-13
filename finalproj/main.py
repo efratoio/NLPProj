@@ -28,7 +28,7 @@ class Logger(object):
 def evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test):
 	print(model.metrics_names)
 	if config["PROPS"] or config["SEMANTIC"]:
-		model.fit([x_train[0],x_train[1]], y_train, validation_data=([x_val[0],x_val[1]], y_val),epochs=10, batch_size=20)
+		model.fit([x_train[0],x_train[1]], y_train, validation_data=([x_val[0],x_val[1]], y_val),epochs=config["EPOCHS"], batch_size=config["BATCH_SIZE"])
 	else:
 		model.fit(x_train, y_train, validation_data=(x_val, y_val),epochs=config["EPOCHS"], batch_size=config["BATCH_SIZE"])
 
