@@ -50,13 +50,13 @@
         }
 
 
-    \node[output neuron, right of=A-turn-3] (V) at (\layersept + \layersep+\layersep+\layersep,-2.2)  {$v_d$};
+    \node[output neuron, right of=A-turn-3] (V) at (\layersept + \layersep+\layersep+\layersep,-2.2)  {$\vec{v_d}$};
     % \node[output neuron, right of=V] (sm) {softmax};
 
-    \node[output neuron, above of=H-rev-1] (U) {$u_w$};
-    \node[output neuron, above of=H-rev-sent-1] (Us) {$u_s$};
-    \node[output neuron, above of=H-rev-turn-1] (Ut) {$u_t$};
-    \node[semantic neuron] (sem) at (\layersept + \layersep+\layersep+\layersep,-0.2) {$u_{sem}$};
+    \node[output neuron, above of=H-rev-1] (U) {$\vec{u_w}$};
+    \node[output neuron, above of=H-rev-sent-1] (Us) {$\vec{u_s}$};
+    \node[output neuron, above of=H-rev-turn-1] (Ut) {$\vec{u_t}$};
+    \node[semantic neuron] (sem) at (\layersept + \layersep+\layersep+\layersep,-0.2) {$\vec{u_{sem}}$};
 
    
     % \node[output neuron, right of=H-3] (O) {};
@@ -143,15 +143,15 @@ and a semantic feature encoder.
 
 \subsection{Text Encoder}
 
-\paragraph*{GRU Encoder}
+\paragraph*{LSTM Encoder}
 We have divided the task of encoding the dialog into several 
 layers of encoders, each dealing with the dialog in a different granularity. 
 At the lowest lever, we encode the words of each dialog into vectors 
 and use word-level attention. Then a sentence encoder and sentence level attention 
 translate the sentences into vectors, again using sentence-level attention, to extract a vector describing the text. 
-We use a GRU-based sequence encoder \cite{BahdanauCB14} which uses 
+We use a LSTM-based sequence encoder \cite{BahdanauCB14} which uses 
 a reset gate and an update gate ($r_t$ and $z_t$, respectively), 
-so that at time $t$ the state of the GRU is 
+so that at time $t$ the state of the LSTM is 
 
 \begin{equation*}
 	h_t = (1-z_t)\cdot h_{t-1} + z_t \cdot \widetilde{h_t}
@@ -191,10 +191,10 @@ to an encoding of the entire sequence. From there, we perform
 a binary classification. 
 
 In the word level, we embed each word using an embedding matrix \cite{glove} 
-and use a bidirectional GRU 
+and use a bidirectional LSTM 
 to get annotations of words by summarizing information
 from both directions for words \cite{attention}. 
-Employing both a forward and a backward GRU 
+Employing both a forward and a backward LSTM 
 allows the encoder to get the contextual meaning of the words. 
 For a given word $w_{it}, t\in [0,T]$, 
 we concatenate the forward hidden state and
@@ -227,30 +227,31 @@ based on the weights.
 \end{equation*}
 
 We use a similar mechanism (including the forward and backward 
-GRU, and the attention layer) for the sentence-level vectors, 
+LSTM, and the attention layer) for the sentence-level vectors, 
 for the sentences appearing in each turn in the sequence $seq_i$. 
 The output of this stage is a turn vector. 
-
-Once we have the representation of all the turns in $seq_i$, 
-we again use a GRU to convert then into a sequence vector $v$. 
 
 \subsection{Semantic Features}
 The additional semantic features specified 
 in Sections \ref{sec:sem}, \ref{sec:kb} 
-are added as coordinates in the sequence vector $v$, so that 
+are added as coordinates in the sequence vector $\vec{u_{sem}}$, so that 
 each vector also contains semantic features. 
 All features are normalized by taking the largest 
 value in each coordinate across all sequences and dividing 
 all values in that coordinate by this value.  
 Note that the length of the vector depends on $k$, 
 i.e., the number of sentences in the sequences. 
-A semantic vector has $2k+3$ coordinates since feature \ref{itm:between} in Section \ref{sec:semantic} requires $k-1$ coordinates, and 
+A semantic vector has $2k+3$ coordinates since feature \ref{itm:between} in Section \ref{sec:sem} requires $k-1$ coordinates, and 
 feature \ref{itm:sent} requires $k$ coordinates. 
 features \ref{itm:total}, \ref{itm:budget} requires a single coordinate each, 
 and the knowledge based features are summarized into $2$ additional coordinates, 
 one for geographical similarity and the other for time similarity during the sequence. 
 
-This vector is then appended to the vector representating the encoded text in the sequence, generated through the model mentioned above. 
+This vector is then appended to the vector representing the encoded text in the sequence, 
+generated through the model mentioned above. 
+The generated vector $\vec{v_d}$ is the final encoding for the sequence.
+% Once we have the representation of all the turns in $seq_i$, 
+% we again use a LSTM to convert then into a sequence vector $\vec{v_d}$. 
 % These vectors are the input for a fully-connected neural 
 % network with 2 hidden layers, with 12 and 8 neurons, respectively. 
 % As this is a binary classification, the network has an output layer of size 1. 

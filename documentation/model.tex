@@ -86,19 +86,22 @@ can tag all actions and search for the action signaling the task's completion.
 In our setting, however, we assume that $k$ is smaller than the dialog 
 length, thus presenting a different challenge, requiring a somewhat different approach. 
 
-
-
-\subsection{Semantic Features}\label{sec:sem}
-We use two types of features, designed to capture
-different aspects of the problem. We use neural 
-language model features to leverage corpus
+We use neural language model features to leverage corpus
 level word distributions and sentence understandings, 
 specifically longer term
 sequence probabilities. 
 We elaborate on this in Section \ref{sec:network}. 
-In addition, we use the meta-data of 
-the dialog in order to extract characteristic features of the dialog 
-to help capture other aspects. 
+We further use two more types of features: auxiliary features 
+extracted form the meta-data of the dialog and semantic features 
+which employ an external knowledge base.
+
+
+\subsection{Auxiliary Features}\label{sec:sem}
+% We use two types of features, designed to capture 
+% different aspects of the problem. 
+% We use the meta-data of 
+% the dialog in order to extract characteristic features of the dialog 
+% to help capture other aspects. 
 
 
 % \paragraph*{Language Model Features}
@@ -115,7 +118,7 @@ to help capture other aspects.
 % Including additional features 
 % extracted from the meta-data of the dialog can further enrich the our model. 
 
-We add the following semantic features 
+We add the following auxiliary features 
 to describe the general nature 
 of the interaction between the two sides 
 in the sequence. All features here 

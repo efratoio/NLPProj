@@ -21,24 +21,32 @@ We then use Keras to build our hierarchal network, train it and test it on the
 dataset, with the exception of the attention layers applied on both the word and sentence 
 levels, implementing the concepts presented in \cite{attention,tc}. 
 The hyper-parameters in our experiments are as follows. 
-Word embedding dimension is set to 50 \amir{verify} and the 
-GRU dimension is set to 100 \amir{verify}. 
+Word embedding dimension is set to 100 and the 
+LSTM dimension is set to 50. 
 
 We have divided the dataset into 1000 training dialogs and 300 test dialogs 
 (some of the dialogs were too short to be included, containing only 3 or less sentences).
-Training was performed with a mini-batch of size 64 \amir{verify}, 
-and 64 \amir{verify} epochs.
-Our network used SGD with a momentum of 0.9 \amir{verify} to train.
+Training was performed with a mini-batch of size 20, 
+and 20 epochs.
+% Our network used SGD with a momentum of 0.9 \amir{verify} to train.
 
-\subsection{Baselines}
+\subsection{Baselines}% and Results
 To our knowledge, no solution for the 
 dialog-end problem has been previously proposed. To nevertheless
 gain insight on alternatives, we have tested several configurations 
 of the network. 
 The different configurations of the network include: 
 (1) adding the additional turn-level encoding, 
-(2) including word and sentence level attention, and 
+(2) including word and sentence level attention, 
+(3) including turn-level attention, and 
 (3) varying $k$.
+
+We have examined various configurations that do not use/use options 
+(1), (2), and (3) with three different values of $k$, namely $4,8$ and 
+the full dialog. 
+We have also experimented with different parameters of the of the network. 
+In particular, the dimensionality of the LSTM output was adapted towards 
+the best performing configuration.
 
 % \begin{enumerate}
 % 	\item Standard bag-of-words implementation using only the text.\label{b:1}
@@ -94,11 +102,13 @@ and with the values $k=4$, $k=8$, and when the input is the full dialog (recall 
         \hline Yes & No & No & 8 & TBD \\
         \hline Yes & Yes & No & 8 & 57.2 \\
         \hline Yes & Yes & Yes & 8 & 67.1 \\
+        \hline Yes & No & Yes & 8 & TBD \\
         \hline No & No & No & full dialog & 84.6 \\
         \hline No & Yes & No & full dialog & 84.9 \\
         \hline Yes & No & No & full dialog & 89 \\
         \hline Yes & Yes & No & full dialog & 92.3 \\
         \hline Yes & Yes & Yes & full dialog & 89.3 \\
+        \hline Yes & No & Yes & full dialog & 93 \\
         
         \hline
     \end{tabular}
@@ -106,18 +116,32 @@ and with the values $k=4$, $k=8$, and when the input is the full dialog (recall 
 \end{table*}
 
 The results for the different structures of the network are shown in Table \ref{tbl:resComps}. 
-All baselines show an improvement in performance with the increase of $k$. 
-Since the hierarchical network without the turn-layer analyzes the contexts and models the text itself, 
-it is much more affected by the addition of new text than other structures, where more semantic features 
-do not necessarily imply novel information \amir{nake sure}. 
-Thus, the semantic features based approach (baseline \ref{b:3}) is considerably 
-less sensitive to an increase in $k$ than the hierarchical network. 
+First, note that our novel configuration with the turn layer and attention on the turns alone 
+performs better than the all other configurations (specifically, the one given in \cite{attention}) 
+reaching \amir{complete} for $k=8$ and 93\% accuracy for the full dialog. 
+All configurations show an improvement in performance with the increase of $k$, 
+except a single one which we will explain in the sequel. 
+Configurations that include a turn layer with the attention mechanism applied on all layers 
+tend to overfit the data reaching up to 99\% accuracy during training but 
+dropping up to 57.2\% accuracy during testing. 
+This suggests that these configurations are too complex for the amount of data in our dataset. 
 Further note that for smaller values of $k$, the attention mechanism 
-does not increase performance by a major factor (1\% at most). This again stems from 
-the mechanism's need for a larger volume of text. As evidence, there is 
-an improvement of 5\% over the full dialogs. 
-We can see that adding the additional layer for turns assists the network in the 
-classification from the comparison between baselines \ref{b:4} and \ref{b:5} for $k=4,8$. 
+(for words and sentences, turns, and both) damages performance due to overfitting. 
+However, for the full dialog, there is an improvement of up to 4\%. 
+This stems from the mechanism's need for a larger volume of text.
+
+
+% Since the hierarchical network without the turn-layer is focused on the text itself, 
+% it is much more affected by the addition of new text than other structures, where more semantic features 
+% do not necessarily imply novel information \amir{make sure}. 
+% Thus, the semantic features based approach (baseline \ref{b:3}) is considerably 
+% less sensitive to an increase in $k$ than the hierarchical network. 
+% Further note that for smaller values of $k$, the attention mechanism 
+% does not increase performance by a major factor (1\% at most). This again stems from 
+% the mechanism's need for a larger volume of text. As evidence, there is 
+% an improvement of 5\% over the full dialogs. 
+% We can see that adding the additional layer for turns assists the network in the 
+% classification from the comparison between baselines \ref{b:4} and \ref{b:5} for $k=4,8$. 
 Interestingly, the semantic features do not seem to improve the performance 
 when they are add to the turn vector.
 
