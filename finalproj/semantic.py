@@ -94,7 +94,12 @@ def date_difference(s, t):
     
     #print(s_m, s_d, t_m, t_d)
 
-    return abs((s_m*30+int(s_d)) - (t_m*30+int(t_d)))
+    res = 0
+    try:
+        res = abs((s_m*30+int(s_d)) - (t_m*30+int(t_d)))
+    except:
+       pass
+    return res
 
 
 
