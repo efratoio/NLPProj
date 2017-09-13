@@ -24,9 +24,8 @@ given turn and focuses specifically on words and sentences that
 have prominent affect on the direction of the dialog.
 
 Dialog act \cite{DBLP:conf/icassp/JiB05,DBLP:conf/coling/WermterL96,AngLS05,SurendranL06,li2016multi,ortega2017neural} 
-is a related field, focusing on the 
-the characterization of parts or sentences in the dialog 
-in terms of meaning. Recent works \cite{li2016multi,ortega2017neural} use 
+is also a related field, focusing on the 
+the characterization of parts or sentences in the dialog. Recent works \cite{li2016multi,ortega2017neural} use 
 deep learning and attention approaches to achieve accurate results. 
 Naturally, when the full dialog is given as input, the dialog-end task 
 can be viewed as a dialog act task since classifying the dialog act 
@@ -35,15 +34,18 @@ However, in the motivating use-case, the input is not a full dialog, and
 therefore, different approach is called for. 
 
 Our system mostly relied on work 
-done in the field of document classification \cite{attention,...} \amir{cite from attention paper} where input documents need to be classified into subjects 
+done in the field of document or text classification \cite{attention,ZhangZL15,Lai,elhadad2017novel,van2017effective} 
+where input documents need to be classified into subjects 
 (e.g., science, art, history etc.). 
-Several learning approaches have been suggested here, 
-such as n-grams \cite{...}, deep fully-connected networks \cite{...}, 
-and convolutional networks \cite{...}. The recent approach \cite{attention} 
-which seem to our problem as well relies on a hierarchical structure to 
+% Several learning approaches have been suggested here, 
+% such as deep fully-connected networks \cite{...}, 
+% and convolutional networks \cite{...}. 
+The recent approach of \cite{attention}, 
+relies on a hierarchical attention structure to 
 encode the words, the sentences, and finally the whole document 
 using GRUs and an attention mechanism. 
-This approach relies on text alone to infer the class 
-of the document, while we also add semantic features to better 
+This concept seems to fit our task as well. 
+By nature of the task, these approaches rely on text alone to infer the class 
+of the document, while in our task we can utilize additional semantic features to better 
 understand the context and add a layer above the sentence layer 
-to encode the turns. 
+to encode the turns and give a finer grained specification of the dialog. 

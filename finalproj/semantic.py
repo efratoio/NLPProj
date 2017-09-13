@@ -1,12 +1,16 @@
 
+# coding: utf-8
+
+# In[11]:
+
+
 import rdflib
 import os, sys
 
 
-
 def load_graph():
     g = rdflib.Graph()
-    g.parse("../onto.nt", format="nt")
+    g.parse("../semantics_extraction/onto.nt", format="nt")
     return g
 
 def check_in_ontology(g, a, b):
@@ -43,11 +47,11 @@ def check_text(g, text):
                 
 def geographic_difference(g, s, t):
     # Currently - equal weight for every connection
-    s = s.lower()
-    t = t.lower()
+    s = s.lower().replace(" ", "_").split(",")[0].strip()
+    t = t.lower().replace(" ", "_").split(",")[0].strip()
     if s == t:
         return 0
-    return 3 - len(check_in_ontology(g, s, t))
+    return 3 - min(len(check_in_ontology(g, s, t)), 3)
 
 def month_to_num(m):
     if m == "jan":
@@ -74,25 +78,45 @@ def month_to_num(m):
         return 11
     if m == "dec":
         return 12
+    return 0
     
 
 def date_difference(s, t):
     s_splitted = s.lower().split()
     t_splitted = t.lower().split()
+    t_d = s_d = 0
     s_m = month_to_num(s_splitted[0][0:3])
-    s_d = s_splitted[1]
+    if len(s_splitted) > 1:
+        s_d = s_splitted[1]
     t_m = month_to_num(t_splitted[0][0:3])
-    t_d = t_splitted[1]
+    if len(t_splitted) > 1:
+        t_d = t_splitted[1]
     
     #print(s_m, s_d, t_m, t_d)
 
-    return abs((s_m*30+int(s_d)) - (t_m*30+int(t_d)))
+    res = 0
+    try:
+        res = abs((s_m*30+int(s_d)) - (t_m*30+int(t_d)))
+    except:
+       pass
+    return res
+
+
+
+# In[13]:
+
+
+import json
+
+def load_json(frame_path):
+    chat_file = open(frame_path, encoding='utf-8')
+    chat = json.load(chat_file)
+    return chat
 
 def prepare_frames_vector(chat,g):
-
+    final_vector = []
     dst_city = or_city = str_date = end_date = ""
     or_city_diff = dst_city_diff = str_date_diff = end_date_diff = 0
-    final_vector=[]
     for t in chat["turns"]:
         if "text" in t:
             prev_or_city = or_city
@@ -122,10 +146,13 @@ def prepare_frames_vector(chat,g):
             if len(prev_end_date) > 1:
                 end_date_diff = date_difference(end_date, prev_end_date)
 
-                         
+            print()
+            print(t["author"])
+            print(t["text"])                
             print(or_city_diff, dst_city_diff, str_date_diff, end_date_diff)
             
-            final_vector.append([t["author"], or_city_diff+dst_city_diff, str_date_diff+end_date_diff])
-    print("final vector len",len(final_vector))
-    print("turn len",len(chat["turns"]))
+            final_vector.append([t["author"], t["text"], or_city_diff+dst_city_diff, str_date_diff+end_date_diff])
+    
     return final_vector
+                    
+

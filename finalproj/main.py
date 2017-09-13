@@ -1,3 +1,7 @@
+
+# coding: utf-8
+
+
 import data
 import network
 import sys, traceback
@@ -20,15 +24,18 @@ class Logger(object):
     def close(self):
     	self.log.close()
 
+
 def evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test):
-    print(model.metrics_names)
-    if config["PROPS"]:
-    	model.fit([x_train[0],x_train[1]], y_train, validation_data=([x_val[0],x_val[1]], y_val),epochs=10, batch_size=20)
-    else:
-	    model.fit(x_train, y_train, validation_data=(x_val, y_val),epochs=config["EPOCHS"], batch_size=config["BATCH_SIZE"])
+	print(model.metrics_names)
+	if config["PROPS"] or config["SEMANTIC"]:
+		model.fit([x_train[0],x_train[1]], y_train, validation_data=([x_val[0],x_val[1]], y_val),epochs=config["EPOCHS"], batch_size=config["BATCH_SIZE"])
+	else:
+		model.fit(x_train, y_train, validation_data=(x_val, y_val),epochs=config["EPOCHS"], batch_size=config["BATCH_SIZE"])
 
-    return model.evaluate(x_test,y_test, batch_size=config["BATCH_SIZE"], verbose=1, sample_weight=None)
-
+	if config["PROPS"] or config["SEMANTIC"]:
+		return model.evaluate(x_test,y_test, batch_size=config["BATCH_SIZE"], verbose=1, sample_weight=None)
+	else:
+		return model.evaluate([x_test[0],x_test[1]],y_test, batch_size=config["BATCH_SIZE"], verbose=1, sample_weight=None)
 
 
 def run_net(config,word_index,x_train, y_train,x_val, y_val,x_test,y_test):
