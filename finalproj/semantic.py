@@ -81,7 +81,12 @@ def month_to_num(m):
     return 0
     
 
+
 def date_difference(s, t):
+    print(s)
+    print(t)
+    if s is None or t is None:
+        return 0
     s_splitted = s.lower().split()
     t_splitted = t.lower().split()
     t_d = s_d = 0
@@ -93,15 +98,12 @@ def date_difference(s, t):
         t_d = t_splitted[1]
     
     #print(s_m, s_d, t_m, t_d)
-
-    res = 0
+    ret = 0
     try:
-        res = abs((s_m*30+int(s_d)) - (t_m*30+int(t_d)))
+        ret = abs((s_m*30+int(s_d)) - (t_m*30+int(t_d)))
     except:
-       pass
-    return res
-
-
+        pass
+    return ret
 
 # In[13]:
 
@@ -114,6 +116,7 @@ def load_json(frame_path):
     return chat
 
 def prepare_frames_vector(chat,g):
+    print(chat["id"])
     final_vector = []
     dst_city = or_city = str_date = end_date = ""
     or_city_diff = dst_city_diff = str_date_diff = end_date_diff = 0
@@ -141,17 +144,17 @@ def prepare_frames_vector(chat,g):
             if len(prev_dst_city) > 1:
                 dst_city_diff = geographic_difference(g, prev_dst_city, dst_city)
                 
-            if len(prev_str_date) > 1:
+            if prev_str_date is not None and len(prev_str_date) > 1:
                 str_date_diff = date_difference(str_date, prev_str_date)
-            if len(prev_end_date) > 1:
+            if prev_end_date is not None and len(prev_end_date) > 1:
                 end_date_diff = date_difference(end_date, prev_end_date)
 
-            print()
-            print(t["author"])
-            print(t["text"])                
-            print(or_city_diff, dst_city_diff, str_date_diff, end_date_diff)
+            # print()
+            # print(t["author"])
+            # print(t["text"])                
+            # print(or_city_diff, dst_city_diff, str_date_diff, end_date_diff)
             
-            final_vector.append([t["author"], t["text"], or_city_diff+dst_city_diff, str_date_diff+end_date_diff])
+            final_vector.append([ or_city_diff+dst_city_diff, str_date_diff+end_date_diff])
     
     return final_vector
                     

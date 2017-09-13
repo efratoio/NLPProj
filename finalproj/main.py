@@ -43,14 +43,22 @@ def run_net(config,word_index,x_train, y_train,x_val, y_val,x_test,y_test):
 	res = evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test)
 	print(str(res)+"\n")
 
+def run_rnn(config,x_train, y_train,x_val, y_val,x_test,y_test):
+	model = network.create_rnn(config)
+	res = evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test)
+	print(str(res)+"\n")
+
   
 
 
   
 def run_network(config):
 	chats = data.gen_chat_data()
-	word_index,x_train, y_train,x_val, y_val,x_test,y_test = data.prepare_datasets(config,chats)     
-	run_net(config,word_index,x_train, y_train,x_val, y_val,x_test,y_test)
+	word_index,x_train, y_train,x_val, y_val,x_test,y_test = data.prepare_datasets(config,chats)   
+	if "RNN" in config.keys():
+		run_rnn(config,x_train, y_train,x_val, y_val,x_test,y_test)
+	else:
+		run_net(config,word_index,x_train, y_train,x_val, y_val,x_test,y_test)
 
 
 
@@ -59,7 +67,6 @@ for file_name in listdir("./configurations"):
 	with open(path.join("./experiments",file_name[:-5]+".log"),"w") as log_file:
 		with redirect_stdout(log_file):
 			config = data.load_config(path.join("./configurations",file_name))
-			print("hi")
 			try:
 				run_network(config)
 			except:

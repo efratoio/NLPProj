@@ -131,5 +131,14 @@ def create_network(config,word_index):
 	return model
 
 
+def create_rnn(config):
+
+	review_input = Input(shape=(MAX_TURNS,config["VEC_SIZE"]), dtype='float32')
+	l_lstm = Bidirectional(LSTM(config["RNN_DIM"]))(review_input)
 
 
+	preds = Dense(2, activation='softmax')(l_lstm)
+	model = Model(review_input, preds)
+
+	model.compile(loss='categorical_crossentropy',optimizer='rmsprop',metrics=['acc'])
+	return model
