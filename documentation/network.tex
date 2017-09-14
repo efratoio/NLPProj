@@ -83,22 +83,24 @@
         \path (H-rev-turn-\i) edge (H-rev-turn-\source);
         }
 
-    \foreach \source in {1,...,4}{
-        \path (H-rev-\source) edge (A-\source);
-        \path (U) edge (A-\source);
-
-        \path (H-rev-sent-\source) edge (A-sent-\source);
-        \path (Us) edge (A-sent-\source);
-
-        \path (H-rev-turn-\source) edge (A-turn-\source);
-        \path (Ut) edge (A-turn-\source);
-        }
+    
 
     \foreach \source in {1,...,4}{
     	\node[draw,dotted,thick,fit=(H-rev-\source) (H-\source)] (box-\source) {};
     	\node[draw,dotted,thick,fit=(H-rev-sent-\source) (H-sent-\source)] (box-sent-\source) {};
     	\node[draw,dotted,thick,fit=(H-rev-turn-\source) (H-turn-\source)] (box-turn-\source) {};
     	}
+
+   	\foreach \source in {1,...,4}{
+        \path (box-\source) edge (A-\source);
+        \path (U) edge (A-\source);
+
+        \path (box-sent-\source) edge (A-sent-\source);
+        \path (Us) edge (A-sent-\source);
+
+        \path (box-turn-\source) edge (A-turn-\source);
+        \path (Ut) edge (A-turn-\source);
+        }
 
    	\foreach \source in {1,...,4} {
     	\path (box-\source) edge (S-2);
@@ -136,9 +138,9 @@
 \caption{Network Architecture}\label{fig:arch}
 \end{center}
 \end{figure}
-For the architecture of our network , 
+% For the architecture of our network , 
 Our network (whose architecture is depicted in Figure \ref{fig:arch}) consists of two main components: 
-a text encoder for which we have augmented the hierarchical attention network described in \cite{attention}, 
+a text encoder for which we have augmented the hierarchical attention network inspired by \cite{attention}, 
 and a semantic feature encoder. 
 
 \subsection{Text Encoder}
@@ -149,60 +151,61 @@ layers of encoders, each dealing with the dialog in a different granularity.
 At the lowest lever, we encode the words of each dialog into vectors 
 and use word-level attention. Then a sentence encoder and sentence level attention 
 translate the sentences into vectors, again using sentence-level attention, to extract a vector describing the text. 
-We use a LSTM-based sequence encoder \cite{BahdanauCB14} which uses 
-a reset gate and an update gate ($r_t$ and $z_t$, respectively), 
-so that at time $t$ the state of the LSTM is 
+For the first step of encoding in each level, we use an LSTM-based sequence encoder \cite{lstm,birnn}. 
+% We use a LSTM-based sequence encoder \cite{BahdanauCB14} which uses 
+% a reset gate and an update gate ($r_t$ and $z_t$, respectively), 
+% so that at time $t$ the state of the LSTM is 
 
-\begin{equation*}
-	h_t = (1-z_t)\cdot h_{t-1} + z_t \cdot \widetilde{h_t}
-\end{equation*}
+% \begin{equation*}
+% 	h_t = (1-z_t)\cdot h_{t-1} + z_t \cdot \widetilde{h_t}
+% \end{equation*}
 
-Where $h_{t-1}$ is the previous state and $\widetilde{h_t}$ 
-is the current new state, computed with the new sequence information. 
-$z_t$ controls the amount of past information that is kept 
-and the amount of newly added information. $z_t$ is updated like so
+% Where $h_{t-1}$ is the previous state and $\widetilde{h_t}$ 
+% is the current new state, computed with the new sequence information. 
+% $z_t$ controls the amount of past information that is kept 
+% and the amount of newly added information. $z_t$ is updated like so
 
-\begin{equation*}
-	z_t = \sigma(W_z x_t + U_z h_{t-1} + b_z)
-\end{equation*}
+% \begin{equation*}
+% 	z_t = \sigma(W_z x_t + U_z h_{t-1} + b_z)
+% \end{equation*}
 
-$x_t$ is the sequence vector at time $t$ and 
-$\widetilde{h_t}$ is the candidate state, which is 
-computed in this manner: 
+% $x_t$ is the sequence vector at time $t$ and 
+% $\widetilde{h_t}$ is the candidate state, which is 
+% computed in this manner: 
 
-\begin{equation*}
-	\widetilde{h_t} = tanh(W_h x_t + r_t \cdot U_h h_{t-1} + b_h)
-\end{equation*}
+% \begin{equation*}
+% 	\widetilde{h_t} = tanh(W_h x_t + r_t \cdot U_h h_{t-1} + b_h)
+% \end{equation*}
 
-As mentioned previously, $r_t$ is the reset gate 
-controlling how much of the information embedded in 
-the previous state will contribute to the new candidate state. 
-Note that if $r_t = 0$, the previous state is neglected. 
-To update $r_t$, we have the following equation (similar to the update of $z_t$)
+% As mentioned previously, $r_t$ is the reset gate 
+% controlling how much of the information embedded in 
+% the previous state will contribute to the new candidate state. 
+% Note that if $r_t = 0$, the previous state is neglected. 
+% To update $r_t$, we have the following equation (similar to the update of $z_t$)
 
-\begin{equation*}
-	r_t = \sigma(W_r x_t + U_r h_{t-1} + b_r)
-\end{equation*}
+% \begin{equation*}
+% 	r_t = \sigma(W_r x_t + U_r h_{t-1} + b_r)
+% \end{equation*}
 
 \paragraph*{Combining Attention}
-Given an instance of of dialog-end $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$, where $|seq_i| = k$ for some $k \in \mathbb{N}$, each sequence contains $S_i$ sentences, each sentence $s_i \in seq_j$ contains $T_i$ words. 
+Given an instance of dialog-end $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$, where $|seq_i| = k$ for some $k \in \mathbb{N}$, each sequence contains $S_i$ sentences, each sentence $s_i \in seq_j$ contains $T_i$ words. 
 We describe the different levels of encoding the attention that lead 
-to an encoding of the entire sequence. From there, we perform 
+to an encoding of the entire sequence. From there, we add the semantic features and perform 
 a binary classification. 
 
 In the word level, we embed each word using an embedding matrix \cite{glove} 
 and use a bidirectional LSTM 
 to get annotations of words by summarizing information
-from both directions for words \cite{attention}. 
+from both directions for words (Word Encoder component in Figure \ref{fig:arch}). 
 Employing both a forward and a backward LSTM 
 allows the encoder to get the contextual meaning of the words. 
-For a given word $w_{it}, t\in [0,T]$, 
+For a given word $w_{it}, t\in [0,T_i]$, 
 we concatenate the forward hidden state and
 backward hidden state to get its annotation. 
 
 In the attempt of distinguishing the important 
 words in the sentence from the rest, we employ word-level 
-attention. We highlight the words that most contribute 
+attention (Word Attention component in Figure \ref{fig:arch}). We highlight the words that most contribute 
 to the meaning of the entire sentence so that we can represent 
 a sentence vector $s_i$. 
 
@@ -227,14 +230,15 @@ based on the weights.
 \end{equation*}
 
 We use a similar mechanism (including the forward and backward 
-LSTM, and the attention layer) for the sentence-level vectors, 
-for the sentences appearing in each turn in the sequence $seq_i$. 
-The output of this stage is a turn vector. 
+LSTM, and the attention layer) for the sentence-level vectors (Sent. Encoder and Sent. Attention components in Figure \ref{fig:arch}), 
+for the sentences appearing in each turn in the sequence $seq_i$ and then get a sequence representation 
+(Turn Encoder and Turn Attention components in Figure \ref{fig:arch}). 
+The output of this stage is a sequence vector, representing {\em the text} in the entire sequence. 
 
 \subsection{Semantic Features}
 The additional semantic features specified 
 in Sections \ref{sec:sem}, \ref{sec:kb} 
-are added as coordinates in the sequence vector $\vec{u_{sem}}$, so that 
+are added as coordinates in the sequence vector ($\vec{u_{sem}}$ in Figure \ref{fig:arch}), so that 
 each vector also contains semantic features. 
 All features are normalized by taking the largest 
 value in each coordinate across all sequences and dividing 
