@@ -4,7 +4,7 @@
 Dialog understanding has been the subject of 
 extensive research \cite{BohusR03,BordesW16,GhazvininejadBC17,ShawarA03,DBLP:conf/icassp/JiB05,DBLP:conf/coling/WermterL96}. 
 These works explore different aspects of dialogs, from winning an argument \cite{TanNDL16} 
-to automatically recognize the emotions conveyed in a conversation at each segment \cite{AyadiKK11}. 
+to automatically recognize the emotions conveyed in a dialog at each segment \cite{AyadiKK11}. 
 Namely, previous work \cite{ShawarA03,Jia09,ShawarA08,AngLS05,SurendranL06} has tried to learn dialog 
 generation and tag dialog acts, towards building effective chatbots. 
 
@@ -22,14 +22,23 @@ Customer service teams can also benefit from the system as it can recognize
 whether a customer is calling to terminate the contract with the company 
 or just to get a discount. 
 
-The intuition behind the model is that a conversation has verbal and unverbal signals that are being
-communicated. In textual chats there are many ways to send non-verbal messages: timing of the reponse, usage of icons, typos, misplaced punctuation marks etc.
+The intuition behind our solution is that a dialog has verbal and 
+non-verbal signs that may indicate its success or failure. 
+In textual chats there are many ways to send non-verbal messages: 
+timing of the responses, usage of icons, typos, misplaced punctuation marks etc.
 
-Also in conversations that are more functional by nature, the topic of the conversation is crucial, and the way that the parties relate to the topic may be indicative to the success of the conversation. There are knowledge bases that claim to capture the semantic distance between concepts (like ontologies). By using an ontology designed for the conversation type, and measure the semantic distance between the entities mentioned by the different parties in the conversation, we might model an important aspect in the conversation.
+Also in dialogs that are goal-oriented by nature, 
+the topic of the dialog is crucial, and the way that 
+the parties relate to the topic may be indicative to the success of the dialog. 
+By using an ontology designed for the dialog type and subject, 
+we can model important non-verbal aspects in the dialog.
 
-For example two executives talk about a work process, each of them mentions different parts in the work process. Some stages are not very related, as research and deployment. Some are closer as deployment and testing. If one executive continues to talk about subjects related to research, while the other about deployment, then
-(given the right knowledge base) their corespondance will get high semantic distance, while if thay talked about testing and deploying (or about the same topic)
-it will receive low distance. 
+
+% Also in dialogs that are goal-oriented by nature, the topic of the dialog is crucial, and the way that the parties relate to the topic may be indicative to the success of the conversation. There are knowledge bases that claim to capture the semantic distance between concepts (like ontologies). By using an ontology designed for the conversation type, and measure the semantic distance between the entities mentioned by the different parties in the conversation, we might model an important aspect in the conversation.
+
+% For example two executives talk about a work process, each of them mentions different parts in the work process. Some stages are not very related, as research and deployment. Some are closer as deployment and testing. If one executive continues to talk about subjects related to research, while the other about deployment, then
+% (given the right knowledge base) their corespondance will get high semantic distance, while if thay talked about testing and deploying (or about the same topic)
+% it will receive low distance. 
 
 We provide a formal model for the problem and a hierarchical neural network 
 that achieves promising results. 
@@ -46,7 +55,7 @@ incorporated attention \cite{BahdanauCB14} in each layer.
 We added yet another layer that models turns (turn taking in the chat) and
 incorporated the semantic features in the turns layer.
 we enrich our model with meta-data containing subtle observations 
-that would have remained obfuscated if the model would have considered only dialog. 
+that would have remained obfuscated if the model would have only considered the dialog as plain text. 
 
 
 % First, we will identify the topic of the conversation and named entities 
