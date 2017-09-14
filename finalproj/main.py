@@ -27,15 +27,23 @@ class Logger(object):
 
 def evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test):
 	print(model.metrics_names)
-	if config["PROPS"] or config["SEMANTIC"]:
+
+	# if "RNN" in config.keys():
+	# 	x_train = x_train[1]
+	# 	x_val = x_val[1]
+	# 	x_test = x_test[1]
+
+	if (config["PROPS"] or config["SEMANTIC"]) and "RNN" not in config.keys():
 		model.fit([x_train[0],x_train[1]], y_train, validation_data=([x_val[0],x_val[1]], y_val),epochs=config["EPOCHS"], batch_size=config["BATCH_SIZE"])
 	else:
 		model.fit(x_train, y_train, validation_data=(x_val, y_val),epochs=config["EPOCHS"], batch_size=config["BATCH_SIZE"])
 
-	if config["PROPS"] or config["SEMANTIC"]:
-		return model.evaluate(x_test,y_test, batch_size=config["BATCH_SIZE"], verbose=1, sample_weight=None)
-	else:
+
+	
+	if (config["PROPS"] or config["SEMANTIC"]) and "RNN" not in config.keys():
 		return model.evaluate([x_test[0],x_test[1]],y_test, batch_size=config["BATCH_SIZE"], verbose=1, sample_weight=None)
+	else:
+		return model.evaluate(x_test,y_test, batch_size=config["BATCH_SIZE"], verbose=1, sample_weight=None)
 
 
 def run_net(config,word_index,x_train, y_train,x_val, y_val,x_test,y_test):
@@ -45,6 +53,7 @@ def run_net(config,word_index,x_train, y_train,x_val, y_val,x_test,y_test):
 
 def run_rnn(config,x_train, y_train,x_val, y_val,x_test,y_test):
 	model = network.create_rnn(config)
+	print(model)
 	res = evaluate_model(config,model,x_train, y_train,x_val, y_val,x_test,y_test)
 	print(str(res)+"\n")
 

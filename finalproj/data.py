@@ -95,7 +95,6 @@ def create_data(config,chats):
         for idx in chats.keys():
             sem_vec = None
             if config["SEMANTIC"]:
-                print(idx)
                 sem_vec = semantic.prepare_frames_vector(chats[idx]["chat"],g)
 
             labels.append(chats[idx]["label"])
@@ -160,9 +159,14 @@ def prepare_datasets(config,chats):
             else:
                 for j,v in enumerate(vec):
                     aux_data[i,j,:]= np.array(v)
-        
-        norm_hlp = aux_data.max(axis=0).max(axis=0).astype(np.float)
+        print(vecs[:4])
+        print(aux_data[:4])
+        norm_hlp = aux_data.reshape((data.shape[0]*config["MAX_TURNS"],config["VEC_SIZE"]))
+        norm_hlp = norm_hlp.max(axis=0).astype(np.float)
+        print(norm_hlp)
+        norm_hlp[(norm_hlp==0)] = 1
         aux_data = aux_data.astype(np.float)/norm_hlp
+
     word_index = tokenizer.word_index
     print('Total %s unique tokens.' % len(word_index))
 

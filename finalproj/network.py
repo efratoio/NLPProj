@@ -112,7 +112,7 @@ def create_network(config,word_index):
 
 		if config["PROPS"]:
 			auxiliary_input = Input(shape=(config["MAX_TURNS"],config["VEC_SIZE"],), name='aux_input')
-			last_layer = Dense(config["RNN_DIM"]*2)(concatenate([chats_encoder, auxiliary_input]))
+			last_layer = Dense(config["RNN_DIM"]*2, activation='relu')(concatenate([chats_encoder, auxiliary_input]))
 			last_layer = Bidirectional(LSTM(config["RNN_DIM"],return_sequences=config["TURN_ATTENTION"]))(last_layer)
 		else:
 			last_layer = Bidirectional(LSTM(config["RNN_DIM"],return_sequences=config["TURN_ATTENTION"]))(chats_encoder)
@@ -134,7 +134,7 @@ def create_network(config,word_index):
 
 def create_rnn(config):
 
-	review_input = Input(shape=(MAX_TURNS,config["VEC_SIZE"]), dtype='float32')
+	review_input = Input(shape=(config["MAX_TURNS"],config["VEC_SIZE"]), dtype='float32')
 	l_lstm = Bidirectional(LSTM(config["RNN_DIM"]))(review_input)
 
 
