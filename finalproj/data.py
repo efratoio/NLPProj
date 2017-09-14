@@ -161,7 +161,8 @@ def prepare_datasets(config,chats):
                 for j,v in enumerate(vec):
                     aux_data[i,j,:]= np.array(v)
         
-
+    norm_hlp = aux_data.max(axis=0).max(axis=0).astype(np.float)
+    aux_data = aux_data.astype(np.float)/norm_hlp
     word_index = tokenizer.word_index
     print('Total %s unique tokens.' % len(word_index))
 
@@ -176,6 +177,14 @@ def prepare_datasets(config,chats):
     nb_validation_samples = int(config["VALIDATION_SPLIT"] * data.shape[0])
     nb_test_samples = int(config["TEST_SPLIT"] * data.shape[0])
 
+    if "RNN" in config.keys():
+        x_train = aux_data[:-(nb_validation_samples+nb_test_samples)]
+        y_train = labels[:-(nb_validation_samples+nb_test_samples)]
+        x_val = aux_data[-(nb_validation_samples+nb_test_samples):-nb_test_samples]
+        y_val = labels[-(nb_validation_samples+nb_test_samples):-nb_test_samples]
+        x_test = aux_data[-nb_test_samples:]
+        y_test = labels[-nb_test_samples:]
+        return word_index,x_train, y_train,x_val, y_val,x_test,y_test       
     if config["PROPS"]:
         x_train = (data[:-(nb_validation_samples+nb_test_samples)],aux_data[:-(nb_validation_samples+nb_test_samples)])
         y_train = labels[:-(nb_validation_samples+nb_test_samples)]
