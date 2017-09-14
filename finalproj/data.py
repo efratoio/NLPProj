@@ -161,8 +161,8 @@ def prepare_datasets(config,chats):
                 for j,v in enumerate(vec):
                     aux_data[i,j,:]= np.array(v)
         
-    norm_hlp = aux_data.max(axis=0).max(axis=0).astype(np.float)
-    aux_data = aux_data.astype(np.float)/norm_hlp
+        norm_hlp = aux_data.max(axis=0).max(axis=0).astype(np.float)
+        aux_data = aux_data.astype(np.float)/norm_hlp
     word_index = tokenizer.word_index
     print('Total %s unique tokens.' % len(word_index))
 
