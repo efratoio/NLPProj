@@ -1,5 +1,5 @@
 %!TEX root = main.tex
-\section{Model and Features}\label{sec:model}
+\section{Model and Semantic Features}\label{sec:model}
 
 \subsection{Model}
 In this section we detail our problem model and the necessary background 
@@ -96,7 +96,12 @@ extracted form the meta-data of the dialog and semantic features
 which employ an external knowledge base.
 
 
-\subsection{Auxiliary Features}\label{sec:sem}
+\subsection{Semantic Features}\label{sec:sem} 
+In this part we describe the semantic features added 
+to the representation of a sequence in our network. 
+There are two types of features: meta features based on 
+data extracted from the text itself and knowledge base features 
+based on an external knowledge base.
 % We use two types of features, designed to capture 
 % different aspects of the problem. 
 % We use the meta-data of 
@@ -117,7 +122,7 @@ which employ an external knowledge base.
 % \paragraph*{Auxiliary Semantic Features}\label{sec:semantic}
 % Including additional features 
 % extracted from the meta-data of the dialog can further enrich the our model. 
-
+\paragraph*{Meta Features}
 We add the following auxiliary features 
 to describe the general nature 
 of the interaction between the two sides 
@@ -125,6 +130,8 @@ in the sequence. All features here
 are computed from the given meta-data of the sequence and 
 are part of the final representation of the data as it goes into the 
 third level of the network (see Section \ref{sec:network}). 
+Some of the features we add are related to the domain of our dataset 
+(users trying to book a vacation \cite{frames}).
 
 \begin{enumerate}
 \item {\bf Time between turns: } the time between 
@@ -148,13 +155,13 @@ Intuitively, this feature indicates a progress in the booking process.\label{itm
 % \item {\bf Dominant speaker: } Who is the speaker who is associated with the majority of sentences in the sequence 
 \end{enumerate} 
 
-\subsection{Knowledge Base Features}\label{sec:kb}
+\paragraph*{Knowledge Base Features}\label{sec:kb}
 For these features, we employ the domain knowledge of our goal-oriented dialogs, 
 namely, users trying to book a vacation \cite{frames}. 
 % \amir{Slava - talk about semantic difference between sentences}
-We use an external knowledge to add more semantic features to our model. 
-Specifically, we use a publicly available ontology (DBPedia \cite{dbpedia}).
-we attach three additional geographical-based features to each turn in the dialog. 
+We use an external knowledge base to add more semantic features to our model. 
+Specifically, we use a publicly available ontology (DBPedia \cite{dbpedia}) 
+to attach three additional geographical-based features to each turn in the sequence. 
 Given a sequence with $k$ turns, for each turn, we compute these three features 
 based on the previous turn. 
 
@@ -172,15 +179,15 @@ but still in the same country, she might agree.
 However, a suggestion of a city which is not even 
 in the same country will probably not be accepted. 
 
-In addition to ontological distance, we added time distance. 
+In addition to geographical distance, we add time distance. 
 We measure it as the difference in days between the requested and proposed dates. 
 Usually people plan vacations and business meetings, and can have a few days change in the dates, 
 but a change of a week or more of the travel time means less chances of booking.
-Both features based on experts knowledge about nowadays trends and reality about travel (especially with the new low-cost companies which has flight on specific dates, to certain places). 
+Both features are based on expert knowledge about nowadays trends and reality about travel (especially with the new low-cost companies which has flight on specific dates, to certain places). 
 
-\begin{example}
-Consider a user who wishes to travel to Berlin on August 10. 
-If she is offered to book a flight to Munich on August 15 she is 
-likely to be more interested than if she is offered a flight to 
-Beijing on September 10. 
-\end{example}
+% \begin{example}
+% Consider a user who wishes to travel to Berlin on August 10. 
+% If she is offered to book a flight to Munich on August 15 she is 
+% likely to be more interested than if she is offered a flight to 
+% Beijing on September 10. 
+% \end{example}

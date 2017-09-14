@@ -11,7 +11,7 @@ in the dialog and 0 otherwise. 61\% of the dialogs end with a user
 booking a vacation and the average length of a dialog was 14 turns. 
 
 Since originally this dataset was not created for the dialog-end problem, 
-we had tagged all dialogs automatically, using a other features that exist 
+we had tagged all dialogs automatically, using other features that exist 
 in the dataset, namely sentences that include a ``book'' action. 
 
 Starting from the word embeddings, we have used the 
@@ -19,12 +19,12 @@ NLTK package \cite{DBLP:conf/acl/Bird06} and the already trained network GloVe \
 to embed the words in each sentence to vectors using the the Keras package \cite{chollet2015}. 
 We then use Keras to build our hierarchal network, train it and test it on the 
 dataset, with the exception of the attention layers applied on both the word and sentence 
-levels, implementing the concepts presented in \cite{attention,tc}. 
+levels, inspired by the concepts presented in \cite{attention}. 
 The hyper-parameters in our experiments are as follows. 
 Word embedding dimension is set to 100 and the 
 LSTM dimension is set to 50. 
 
-We have divided the dataset into 1000 training dialogs and 300 test dialogs 
+We have divided the dataset into 80\% training dialogs and 20\% test dialogs 
 (some of the dialogs were too short to be included, containing only 3 or less sentences).
 Training was performed with a mini-batch of size 20, 
 and 20 epochs.
@@ -33,18 +33,19 @@ and 20 epochs.
 \subsection{Baselines}% and Results
 To our knowledge, no solution for the 
 dialog-end problem has been previously proposed. To nevertheless
-gain insight on alternatives, we have tested several configurations 
+gain insight on alternatives, we have tested various configurations 
 of the network. 
 The different configurations of the network include: 
 (1) adding the additional turn-level encoding, 
 (2) including word and sentence level attention, 
 (3) including turn-level attention, and 
-(3) varying $k$.
+(3) varying $k$ (recall Definition \ref{def:target}).
 
-We have examined various configurations that do not use/use options 
+We have examined all configurations that do not use/use options 
 (1), (2), and (3) with three different values of $k$, namely $4,8$ and 
-the full dialog. 
-We have also experimented with different parameters of the of the network. 
+the full dialog. For further comparison, we examined the performance of a naive bag-of-words 
+approach. 
+We have also experimented with different parameters of the network. 
 In particular, the dimensionality of the LSTM output was adapted towards 
 the best performing configuration.
 
@@ -64,11 +65,11 @@ the best performing configuration.
 
 
 \subsection{Results}
-To examine the usefulness of our approach and 
-test the effectiveness of the different components, 
-we have evaluated the different baselines on the Frames 
-dataset \cite{frames} and examined the two main components of our network separately 
-and with the values $k=4$, $k=8$, and when the input is the full dialog (recall Definition \ref{def:target}). 
+% To examine the usefulness of our approach and 
+% test the effectiveness of the different components, 
+% we have evaluated the different baselines on the Frames 
+% dataset \cite{frames} and examined the two main components of our network separately 
+% and with the values $k=4$, $k=8$, and when the input is the full dialog (recall Definition \ref{def:target}). 
 
 % \begin{table*}[!htb]
 %     \centering\small
@@ -90,13 +91,14 @@ and with the values $k=4$, $k=8$, and when the input is the full dialog (recall 
 
 \begin{table*}[!htb]
     \centering\small
-    \begin{tabular}{| c | c | c | c | c | c |}
-        \hline \textbf{Turn Layer} & {\bf Attention On Words and Sents} & \textbf{Attention On Turns} & \textbf{k} & \textbf{Accuracy} \\
+    \begin{tabular}{| c | c | c | c | c | c |}%{\bf Attention On Words and Sents}
+        \hline \textbf{Turn Layer} & \begin{tabular}{@{}c@{}}{\bf Attention On} \\{\bf Words and Sents}\end{tabular} & \textbf{Attention On Turns} & \textbf{k} & \textbf{Accuracy} \\
         \hline No & No & No & 4 & 67.7 \\
         \hline No & Yes & No & 4 & 66.9 \\
         \hline Yes & No & No & 4 & 69.2 \\
         \hline Yes & Yes & No & 4 & 66.1 \\
         \hline Yes & Yes & Yes & 4 & 62.2 \\
+        \hline Yes & No & Yes & 4 & TBD \\
         \hline No & No & No & 8 & 69.8 \\
         \hline No & Yes & No & 8 & 73.4 \\
         \hline Yes & No & No & 8 & TBD \\
@@ -115,6 +117,28 @@ and with the values $k=4$, $k=8$, and when the input is the full dialog (recall 
     \caption{Accuracy in Dialog-End Classification}\label{tbl:resComps}
 \end{table*}
 
+
+\begin{figure}[]
+    \hspace*{-0.8cm}
+    \centering
+    % \begin{subfigure}[b]{0.55\columnwidth}
+        \centering
+        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=2.5in]{exp/configs.pdf}
+        \caption{Performance of Selected Configurations}
+        \label{graph:quality}
+    % \end{subfigure}%
+    % \begin{subfigure}[b]{0.45\columnwidth}
+    %     \centering
+    %     \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=1.6in]{experiments/sp2b_quality_k.pdf}
+    %     \caption{Increasing $k$}
+    %     \label{graph:qualityK}
+    % \end{subfigure}
+    % \caption{Percentage of Success for SP2B}
+    % \label{fig:quality}
+    % \vspace{-4mm}
+\end{figure}
+
+
 The results for the different structures of the network are shown in Table \ref{tbl:resComps}. 
 First, note that our novel configuration with the turn layer and attention on the turns alone 
 performs better than the all other configurations (specifically, the one given in \cite{attention}) 
@@ -130,6 +154,13 @@ Further note that for smaller values of $k$, the attention mechanism
 However, for the full dialog, there is an improvement of up to 4\%. 
 This stems from the mechanism's need for a larger volume of text.
 
+Figure \ref{graph:quality} shows a comparison between three of the configuration 
+we have examined, where Config. 1 is a standard implementation of bag-of-words, 
+Config. 2 is the network shown in \cite{attention}, and Config. 3 is the configuration 
+we present in this project, namely \amir{take best config}. 
+All three networks perform well based in all three cases. 
+We can see that for $k=4,8$, bag-of-words outperforms the more complex 
+networks \amir{decide if }
 
 % Since the hierarchical network without the turn-layer is focused on the text itself, 
 % it is much more affected by the addition of new text than other structures, where more semantic features 
