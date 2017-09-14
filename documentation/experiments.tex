@@ -43,11 +43,13 @@ The different configurations of the network include:
 
 We have examined all configurations that do not use/use options 
 (1), (2), and (3) with three different values of $k$, namely $4,8$ and 
-the full dialog. For further comparison, we examined the performance of a naive bag-of-words 
-approach. 
-We have also experimented with different parameters of the network. 
-In particular, the dimensionality of the LSTM output was adapted towards 
-the best performing configuration.
+the full dialog. 
+For further comparison, we examined the performance of a naive bag-of-words 
+implementation, and an RNN network whose input is only the semantic features described in \ref{sec:sem}. 
+
+% We have also experimented with different parameters of the network. 
+% In particular, the dimensionality of the LSTM output was adapted towards 
+% the best performing configuration.
 
 % \begin{enumerate}
 % 	\item Standard bag-of-words implementation using only the text.\label{b:1}
@@ -101,10 +103,10 @@ the best performing configuration.
         % \hline Yes & No & Yes & 4 & TBD \\
         \hline No & No & No & 8 & 69.8 \\
         \hline No & Yes & No & 8 & 73.4 \\
-        \hline Yes & No & No & 8 & TBD \\
+        % \hline Yes & No & No & 8 & TBD \\
         \hline Yes & Yes & No & 8 & 57.2 \\
         \hline Yes & Yes & Yes & 8 & 67.1 \\
-        \hline Yes & No & Yes & 8 & TBD \\
+        \hline Yes & No & Yes & 8 & 70.2 \\
         \hline No & No & No & full dialog & 84.6 \\
         \hline No & Yes & No & full dialog & 84.9 \\
         \hline Yes & No & No & full dialog & 89 \\
@@ -135,14 +137,15 @@ the best performing configuration.
     % \end{subfigure}
     % \caption{Percentage of Success for SP2B}
     % \label{fig:quality}
-    % \vspace{-4mm}
+    \vspace{-4mm}
 \end{figure}
 
 
 The results for the different structures of the network are shown in Table \ref{tbl:resComps}. 
 First, note that our novel configuration with the turn layer and attention on the turns alone 
 performs better than the all other configurations (specifically, the one given in \cite{attention}) 
-reaching \amir{complete} for $k=8$ and 93\% accuracy for the full dialog. 
+reaching 70.2\% for $k=8$, and 93\% accuracy for the full dialog 
+(we were not able to run it for $k=4$ due to limitations in time). 
 All configurations show an improvement in performance with the increase of $k$, 
 except a single one which we will explain in the sequel. 
 Configurations that include a turn layer with the attention mechanism applied on all layers 
@@ -156,12 +159,24 @@ This stems from the mechanism's need for a larger volume of text.
 
 Figure \ref{graph:quality} shows a comparison between three of the configuration 
 we have examined, where Config. 1 is a standard implementation of bag-of-words, 
-Config. 2 is the network shown in \cite{attention}, and Config. 3 is the configuration 
-we present in this project, namely \amir{take best config}. 
-All three networks perform well based in all three cases. 
+Config. 2 is the network shown in \cite{attention},  Config. 3 is 
+an RNN network whose input is only the semantic features described in \ref{sec:sem}, and Config. 4 is a configuration 
+we present in this project, namely hierarchical network with a turn layer and an attention mechanism on the turns alone. 
+% The last configuration was not able to run for $k=4$ due to limitations in computation resources. 
+All four networks perform well based in all three cases. 
 We can see that for $k=4,8$, bag-of-words outperforms the more complex 
-networks \amir{decide if }
+networks, but when given the full dialog, configuration 4 with the turn layer performs 
+better than all other solutions. 
+In particular, it outperforms the network in \cite{attention}. 
 
+Surprisingly, the network configuration which combines the turn layer and attention along with the 
+semantic features did not perform better than other configurations, namely, 
+\amir{need to add results for the network with turns and semantic features!
+otherwise, it seems we did not even try to run it}. 
+This is despite the performances of each separate component: only the semantic feature and 
+only the network with turn layer and turn attention (Config 3,4 resp.). 
+Our conjecture is that the combination of the two representations was not done 
+in an optimal way and this part of the network can be improved in future work. 
 % Since the hierarchical network without the turn-layer is focused on the text itself, 
 % it is much more affected by the addition of new text than other structures, where more semantic features 
 % do not necessarily imply novel information \amir{make sure}. 
@@ -173,8 +188,8 @@ networks \amir{decide if }
 % an improvement of 5\% over the full dialogs. 
 % We can see that adding the additional layer for turns assists the network in the 
 % classification from the comparison between baselines \ref{b:4} and \ref{b:5} for $k=4,8$. 
-Interestingly, the semantic features do not seem to improve the performance 
-when they are add to the turn vector.
+% Interestingly, the semantic features do not seem to improve the performance 
+% when they are add to the turn vector.
 
 
 % \paragraph*{Baselines \ref{b:1}, \ref{b:2}}

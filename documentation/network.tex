@@ -251,8 +251,8 @@ based on the weights.
 
 We use a similar mechanism (including the forward and backward 
 LSTM, and the attention layer) for the sentence-level vectors (Sent. Encoder and Sent. Attention components in Figure \ref{fig:arch}), 
-for the sentences appearing in each turn in the sequence $seq_i$ and then get a sequence representation 
-(Turn Encoder and Turn Attention components in Figure \ref{fig:arch}).
+and for the turns in the sequence $seq_i$, in order to get a turn representation 
+(Turn Encoder and Turn Attention components in Figure \ref{fig:arch}). 
 The output of this stage is a turn vector, representing {\em the text} in the each turn in the sequence. 
 
 \subsection{Semantic Features}

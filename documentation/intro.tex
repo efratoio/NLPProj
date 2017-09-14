@@ -40,23 +40,25 @@ we can model important non-verbal aspects in the dialog.
 % (given the right knowledge base) their corespondance will get high semantic distance, while if thay talked about testing and deploying (or about the same topic)
 % it will receive low distance. 
 
-We provide a formal model for the problem and a hierarchical neural network 
-that achieves promising results. 
+We provide a formal model for the problem and a suggest 
+different architectures of hierarchical neural networks 
+that achieve promising results. 
 We examine the performance of our architecture 
 in multiple configurations on our benchmark dataset \cite{frames}. 
 
+
 Our solution includes several stages. 
 We first model the text in the given partial dialog and further extract semantic features from the dialogs. 
-We then use an ontology to add yet more features that imply if the conversation 
-is headed towards its target. 
-The language model we have used consists of two hierarchical layers \cite{attention}, the lower 
-models the words and the upper models the sentences. We have further 
-incorporated attention \cite{BahdanauCB14} in each layer. 
-We added yet another layer that models turns (turn taking in the chat) and
-incorporated the semantic features in the turns layer.
-we enrich our model with meta-data containing subtle observations 
-that would have remained obfuscated if the model would have only considered the dialog as plain text. 
-
+The language model we have used consists of three hierarchical layers \cite{attention}, the lower 
+models the words, the second models the sentences, 
+and the third novel layer models turns of each participant in the dialog. 
+% and incorporated the semantic features in the turns layer. 
+We have further incorporated attention \cite{BahdanauCB14} in each layer. 
+% We then use an ontology to add yet more features that imply if the conversation 
+% is headed towards its goal. 
+We enrich our model with features taken from meta-data and an ontology. 
+These features contain subtle observations about the dialog that 
+would have remained obfuscated if the model would have only considered the dialog as plain text. 
 
 % First, we will identify the topic of the conversation and named entities 
 % appearing in it. Second, we will segment the conversation, 
