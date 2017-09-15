@@ -5,9 +5,11 @@
 In this section we detail our problem model and the necessary background 
 for our solution.
 
-The problem we aim to solve is related to the Document Classification task 
-\cite{attention,Slonim:2002:UDC:564376.564401,DBLP:journals/tkde/IsaLKR08} 
-and tries to infer the direction the dialog is headed. 
+The problem we aim to solve 
+% is related to the Document Classification task 
+% \cite{attention,Slonim:2002:UDC:564376.564401,DBLP:journals/tkde/IsaLKR08} 
+% and 
+tries to infer the whether a goal-orineted dialog will reach its goal based on its first part. 
 In our model, we consider a dialog between two sides (a chatbot and a customer, two friends, etc.). 
 A dialog can be modeled as a sequence of turns, 
 where each turn is associated with a timestamp and a speaker, and can consist of several sentences. 
@@ -17,7 +19,7 @@ such turns by $\mathcal{T}$ and define the concepts of {\em sequence prefix} and
 \begin{definition}
 For $seq_1, seq_2 \in \mathcal{T}$, we say that $seq_1$ is the 
 prefix of $seq_2$ and denote by $seq_1 = pr(seq_2)$, if 
-$seq_1 = (t_1, \ldots, t_j)$, $seq_1 = (t_1, \ldots, t_j, \ldots, t_n)$, i.e., $seq_1$ contains the first 
+$seq_1 = (t_1, \ldots, t_j)$, $seq_2 = (t_1, \ldots, t_j, \ldots, t_n)$, i.e., $seq_1$ contains the first 
 turns in $seq_2$. 
 
 We say that $seq \in \mathcal{T}$ is a full dialog if $\;\forall seq' \in \mathcal{T}. seq \neq pr(seq')\; $ 
@@ -25,11 +27,11 @@ We say that $seq \in \mathcal{T}$ is a full dialog if $\;\forall seq' \in \mathc
 
 A {\em full dialog} is then a sequence $seq \in \mathcal{T}$ that is not a prefix 
 of any other $seq' \in \mathcal{T}$. 
-We then define an instance of {\em dialog-end}. 
+We next define an instance of {\em dialog-end}. 
 
 \begin{definition}\label{def:target}
 Given an integer $k$, an instance of dialog-end is a set of sequences of turns $T=\{seq_1, \ldots, seq_n\} \subseteq \mathcal{T}$ such that 
-(1) each turn $t_i$ is associated with a timestamp and a speaker, (2) for every sequence $seq_i\in T$, there exists a full dialog $seq_j\in \mathcal{T}$ such that $seq_i = pr(seq_j)$, and $|seq_i| = k$ for all $1\leq i \leq n$.
+(1) each turn $t_j \in seq_i$ is associated with a timestamp and a speaker, (2) for every sequence $seq_i\in T$, there exists a full dialog $seq_j\in \mathcal{T}$ such that $seq_i = pr(seq_j)$, and (3) $|seq_i| = k$ for all $1\leq i \leq n$.
 \end{definition}
 
 \begin{example}\label{ex:seq}
@@ -73,7 +75,7 @@ the user books a vacation, the dialog is considered successful.
 % \end{definition}
 
 Our task is then a binary classification 
-problem of finding a function that predicts the outcome 
+problem of predicting the outcome 
 of a full dialog $seq_j$ from its prefix $seq_i = pr(seq_j)$. 
 
 Note that for every choice of $k$ we get a different 
@@ -91,7 +93,7 @@ level word distributions and sentence understandings,
 specifically longer term
 sequence probabilities. 
 We elaborate on this in Section \ref{sec:network}. 
-We further use two more types of features: auxiliary features 
+We further use two more types of features: meta features 
 extracted form the meta-data of the dialog and semantic features 
 which employ an external knowledge base.
 
@@ -101,7 +103,8 @@ In this part we describe the semantic features added
 to the representation of a sequence in our network. 
 There are two types of features: meta features based on 
 data extracted from the text itself and knowledge base features 
-based on an external knowledge base.
+based on an external knowledge base. 
+These features will be added to each turn in the given dialog. 
 % We use two types of features, designed to capture 
 % different aspects of the problem. 
 % We use the meta-data of 
@@ -130,8 +133,8 @@ in the sequence. All features here
 are computed from the given meta-data of the sequence and 
 are part of the final representation of the data as it goes into the 
 third level of the network (see Section \ref{sec:network}). 
-Some of the features we add are related to the domain of our dataset 
-(users trying to book a vacation \cite{frames}).
+% Some of the features we add are related to the domain of our dataset 
+% (users trying to book a vacation \cite{frames}).
 
 \begin{enumerate}
 \item {\bf Time between turns: } the time between 
