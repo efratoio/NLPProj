@@ -1,34 +1,40 @@
 %!TEX root = main.tex
 \section{Experiments}\label{sec:exp}
-\subsection{Experiments Motivation and Difficulties}
-In the experimants we wanted to test our hypothesis: that the hierarchical 
-structure and the auxialary features (semantic and knowledge base) does 
-encapsulate some insights about the conversation in the sense that by running 
-machine learning tools on these features we can predict end of dialog.
-We also wanted to test that merging the models, as we explained in the model part
-helps to create better predictions.
-Since the topology of the network we chose was quite complex our search space of best model 
-was large: we could add or ommit attention on each level (words, sentences, turns).
-we could add or ommit the auxiliary vector in the turns level, and we 
-Since the first results on the first k turns of the conversation (k being 4 or 8)
-were not encouraging we tried to take a step back to get the prediction on the entire conversation,
-where the rational is that getting good predictions on the entire conversation might help
-us find the model that best predicts on part of the conversation.
-We have succeeded to find configuration that beats bag-of-words prediction on the entire conversation,
-but in the end this model was not the optimal to predict partial converations.
-Except the experiments with the full topology, we also wanted to know if the auxiliary vector itself
-captures important knowledge on the conversation - we ran a bidirectional rnn with LSTM on the auxiliary 
-vectors (so each timestep represents a turn, and each turn is represented by 5 coordinate vector).
-We discovered that this vector indeed helps to predict end of dialog.
+\subsection{Experiments Motivation and Challenges}
+The experiments were aimed to test our hypothesis that the hierarchical 
+structure and the semantic features form a adequate representation of 
+the dialog prefix in order to predict dialog ends. 
+% encapsulate some insights about the dialog in the sense that by running 
+% machine learning tools on these features we can predict end of the dialog. 
+
+We wanted to compare different topologies of this model, 
+combining the hierarchical network and the semantic features, 
+so that we can infer the best architecture for this task. 
+Since the topology of the network is complex, our search space for the best architecture 
+was large: we could add or omit the turn-level, the attention on each level (words, sentences, turns), 
+and the semantic features. 
+Since the preliminary results for the first $k$ turns of the conversation ($k$ being 4 or 8) 
+were not encouraging we tried to take a step back to and examine the performance over the full dialog, 
+the rational being that getting good predictions on the full dialog may assist 
+us in finding the best performing model on small $k$s. 
+We have succeeded in finding a configuration that outperforms all other configurations, 
+but this model was not the optimal in predictions for smaller $k$s. 
+
+In addition to the experiments with the different topologies, we also wanted to know if the vector containing only semantic features 
+captures important insights about the dialog. 
+We ran a bidirectional RNN with LSTM on the semantic features vectors and 
+discovered that this vector is valuable for predictions.
+% vectors (so each timestep represents a turn, and each turn is represented by 5 coordinate vector).
+% We discovered that this vector indeed helps to predict end of dialog.
 
 \subsection{Experimental Setup}
 We have used the Frames dataset \cite{frames} as 
 our benchmark. Containing 1369 dialogs between 
 a chatbot and users interested in booking a vacations, 
-it consists the entire dialogs along with its semantic features. 
+it consists of the entire dialogs along with their meta data. 
 Each dialog is assigned a tag of 1 if the user has booked a vacation 
 in the dialog and 0 otherwise. 61\% of the dialogs end with a user 
-booking a vacation and the average length of a dialog was 14 turns. 
+booking a vacation and the average length of a dialog is 14 turns. 
 
 Since originally this dataset was not created for the dialog-end problem, 
 we had tagged all dialogs automatically, using other features that exist 
@@ -168,10 +174,11 @@ implementation, and an RNN network whose input is only the semantic features des
 
 The results for the different structures of the network are shown in Table \ref{tbl:resComps}. 
 First, note that our novel configuration with the turn layer and attention on the turns alone 
-performs better than the all other configurations - 93\% accuracy for the full dialog 
+performs better than the all other configurations on the full dialog, 
+achieving 93\% accuracy.
 
 All configurations show an improvement in performance with the increase of $k$, 
-except a single one which we will explain in the sequel. 
+except a single one. 
 Configurations that include a turn layer with the attention mechanism applied on all layers 
 tend to overfit the data reaching up to 99\% accuracy during training but 
 dropping up to 57.2\% accuracy during testing. 
@@ -179,27 +186,31 @@ This suggests that these configurations are too complex for the amount of data i
 and also too complex for taking only 4 turns. 
 Further note that for smaller values of $k$, the attention mechanism 
 (for words and sentences, turns, and both) damages performance due to overfitting. 
-However, for the full dialog, there is an improvement of up to 4\%. 
+However, for the full dialog, there is an improvement of up to 4\% with these configurations. 
 This stems from the mechanism's need for a larger volume of text.
 
-Figure \ref{graph:quality} shows a comparison between three of the configuration 
-we have examined, where Config. 1 is a standard implementation of bag-of-words, 
-Config. 2 is the network shown in \cite{attention},  Config. 3 is 
-an RNN network whose input is only the semantic features described in \ref{sec:sem}, and Config. 4 is a configuration 
-we present in this project, namely hierarchical network with a turn layer and an attention mechanism on the turns alone. 
+Figure \ref{graph:quality} shows a comparison between various topologies 
+in a graphical form, where ``turn topology'' is a network with a turn layer, 
+``attention'' refers to the attention applied on words and sentences, 
+``turn attention'' refers to attention on the turn layer alone, and 
+``feature vector'' refers to the semantic features vector. 
+% three of the configuration 
+% we have examined, where Config. 1 is a standard implementation of bag-of-words, 
+% Config. 2 is the network shown in \cite{attention},  Config. 3 is 
+% an RNN network whose input is only the semantic features described in \ref{sec:sem}, and Config. 4 is a configuration 
+% we present in this project, namely hierarchical network with a turn layer and an attention mechanism on the turns alone. 
 % The last configuration was not able to run for $k=4$ due to limitations in computation resources. 
-All four networks perform well based in all three cases. 
+% All four networks perform well based in all three cases. 
 We can see that for $k=4,8$, bag-of-words outperforms the more complex 
-networks, but when given the full dialog, configuration 4 with the turn layer performs 
+networks, but when given the full dialog, the configuration with the turn layer performs 
 better than all other solutions. 
 In particular, it outperforms the network in \cite{attention}. 
 
-Surprisingly, the network configuration which combines the turn layer and attention along with the 
-semantic features did not perform better than other configurations, namely, 
 
-otherwise, it seems we did not even try to run it}. 
-This is despite the performances of each separate component: only the semantic feature and 
-only the network with turn layer and turn attention (Config 3,4 resp.). 
+Surprisingly, the network configuration which combines the turn layer and attention along with the 
+semantic features did not perform better than other configurations. 
+This is despite the performances of each separate component: the semantic features vector and 
+the network with turn layer and turn attention. 
 Our conjecture is that the combination of the two representations was not done 
 in an optimal way and this part of the network can be improved in future work. 
 % Since the hierarchical network without the turn-layer is focused on the text itself, 
