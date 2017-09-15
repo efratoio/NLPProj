@@ -68,9 +68,9 @@ The different configurations of the network include:
 (1) adding the additional turn-level encoding, 
 (2) including word and sentence level attention, 
 (3) including turn-level attention, and 
-(3) varying $k$ (recall Definition \ref{def:target}).
+(4) varying $k$ (recall Definition \ref{def:target}).
 
-We have examined all configurations that do not use/use options 
+We have examined many different configurations that do not use/use options 
 (1), (2), and (3) with three different values of $k$, namely $4,8$ and 
 the full dialog. 
 For further comparison, we examined the performance of a naive bag-of-words 
@@ -155,20 +155,20 @@ implementation, and an RNN network whose input is only the semantic features des
 \begin{figure}[]
     \hspace*{-0.8cm}
     \centering
-    % \begin{subfigure}[b]{0.55\columnwidth}
+    \begin{subfigure}[b]{0.5\columnwidth}
         \centering
-        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=4in]{graph1}
-        \caption{Performance of Selected Configurations}
-        \label{graph:quality}
-    % \end{subfigure}%
-    % \begin{subfigure}[b]{0.45\columnwidth}
-    %     \centering
-    %     \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=1.6in]{experiments/sp2b_quality_k.pdf}
-    %     \caption{Increasing $k$}
-    %     \label{graph:qualityK}
-    % \end{subfigure}
-    % \caption{Percentage of Success for SP2B}
-    % \label{fig:quality}
+        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=3.4in]{chart1}
+        % \caption{Performance of Selected Configurations}
+        % \label{graph:quality2}
+    \end{subfigure}%
+    \begin{subfigure}[b]{0.5\columnwidth}
+        \centering
+        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=3.4in]{chart2}
+        % \caption{Increasing $k$}
+        % \label{graph:qualityK}
+    \end{subfigure}
+    \caption{Percentage of Success for SP2B}
+    \label{graph:quality}
     \vspace{-4mm}
 \end{figure}
 
@@ -190,8 +190,8 @@ Further note that for smaller values of $k$, the attention mechanism
 However, for the full dialog, there is an improvement of up to 4\% with these configurations. 
 This stems from the mechanism's need for a larger volume of text.
 
-Figure \ref{graph:quality} shows a comparison between various topologies 
-in a graphical form, where ``turn topology'' is a network with a turn layer added, 
+Figure \ref{graph:quality} shows a comparison between various topologies (split into two graphs), 
+where ``turn topology'' is a network with a turn layer added, 
 ``attention'' refers to the attention applied on words and sentences, 
 ``turn attention'' refers to attention on the turn layer alone, and 
 ``feature vector'' refers to the semantic features vector. 
