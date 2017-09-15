@@ -2,8 +2,8 @@
 \section{Experiments}\label{sec:exp}
 \subsection{Motivation and Challenges}
 The experiments were aimed to test our hypothesis that the hierarchical 
-structure and the semantic features form a adequate representation of 
-the dialog prefix in order to predict dialog ends. 
+structure and the semantic features form an adequate representation of 
+the dialog prefix in order to predict dialog end. 
 % encapsulate some insights about the dialog in the sense that by running 
 % machine learning tools on these features we can predict end of the dialog. 
 
@@ -13,14 +13,15 @@ so that we can infer the best architecture for this task.
 Since the topology of the network is complex, our search space for the best architecture 
 was large: we could add or omit the turn-level, the attention on each level (words, sentences, turns), 
 and the semantic features. 
-Since the preliminary results for the first $k$ turns of the conversation ($k$ being 4 or 8) 
-were not encouraging we tried to take a step back to and examine the performance over the full dialog, 
+Since the preliminary results for the first $k$ turns of the dialog ($k$ being 4 or 8) 
+were not encouraging for most topologies we tried to take a step back, 
+and examine the performance over the full dialog, 
 the rational being that getting good predictions on the full dialog may assist 
 us in finding the best performing model on small $k$s. 
 We have succeeded in finding a configuration that outperforms all other configurations, 
 but this model was not the optimal in predictions for smaller $k$s. 
 
-In addition to the experiments with the different topologies, we also wanted to know if the vector containing only semantic features 
+In addition to the experiments with the different topologies, we also wanted to know whether the vector containing only semantic features 
 captures important insights about the dialog. 
 We ran a bidirectional RNN with LSTM on the semantic features vectors and 
 discovered that this vector is valuable for predictions.
@@ -53,8 +54,8 @@ LSTM dimension is set to 50.
 We have divided the dataset into 80\% training dialogs and 20\% test dialogs 
 (some of the dialogs were too short to be included, containing only 3 or less turns).
 Training was performed with a mini-batch of size 20, 
-and 20 epochs. (Some experiments ran on smaller LSTM dimension and less epochs because of 
-lack of time)
+and 20 epochs (some experiments ran on smaller LSTM dimension and less epochs because due to 
+lack of time). Our source code is available at \cite{code}.
 % Our network used SGD with a momentum of 0.9 \amir{verify} to train.
 
 \subsection{Baselines}% and Results
@@ -156,7 +157,7 @@ implementation, and an RNN network whose input is only the semantic features des
     \centering
     % \begin{subfigure}[b]{0.55\columnwidth}
         \centering
-        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=2.5in]{exp/exp.png}
+        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=4in]{graph1}
         \caption{Performance of Selected Configurations}
         \label{graph:quality}
     % \end{subfigure}%
@@ -174,23 +175,23 @@ implementation, and an RNN network whose input is only the semantic features des
 
 The results for the different structures of the network are shown in Table \ref{tbl:resComps}. 
 First, note that our novel configuration with the turn layer and attention on the turns alone 
-performs better than the all other configurations on the full dialog, 
+performs better than all other configurations on the full dialog, 
 achieving 93\% accuracy.
 
 All configurations show an improvement in performance with the increase of $k$, 
 except a single one. 
 Configurations that include a turn layer with the attention mechanism applied on all layers 
 tend to overfit the data reaching up to 99\% accuracy during training but 
-dropping up to 57.2\% accuracy during testing. 
+dropping down to 57.2\% accuracy during testing. 
 This suggests that these configurations are too complex for the amount of data in our dataset,
-and also too complex for taking only 4 turns. 
+and the text available for $k=4,8$. 
 Further note that for smaller values of $k$, the attention mechanism 
 (for words and sentences, turns, and both) damages performance due to overfitting. 
 However, for the full dialog, there is an improvement of up to 4\% with these configurations. 
 This stems from the mechanism's need for a larger volume of text.
 
 Figure \ref{graph:quality} shows a comparison between various topologies 
-in a graphical form, where ``turn topology'' is a network with a turn layer, 
+in a graphical form, where ``turn topology'' is a network with a turn layer added, 
 ``attention'' refers to the attention applied on words and sentences, 
 ``turn attention'' refers to attention on the turn layer alone, and 
 ``feature vector'' refers to the semantic features vector. 
