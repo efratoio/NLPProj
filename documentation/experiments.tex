@@ -1,5 +1,25 @@
 %!TEX root = main.tex
 \section{Experiments}\label{sec:exp}
+\subsection{Experiments Motivation and Difficulties}
+In the experimants we wanted to test our hypothesis: that the hierarchical 
+structure and the auxialary features (semantic and knowledge base) does 
+encapsulate some insights about the conversation in the sense that by running 
+machine learning tools on these features we can predict end of dialog.
+We also wanted to test that merging the models, as we explained in the model part
+helps to create better predictions.
+Since the topology of the network we chose was quite complex our search space of best model 
+was large: we could add or ommit attention on each level (words, sentences, turns).
+we could add or ommit the auxiliary vector in the turns level, and we 
+Since the first results on the first k turns of the conversation (k being 4 or 8)
+were not encouraging we tried to take a step back to get the prediction on the entire conversation,
+where the rational is that getting good predictions on the entire conversation might help
+us find the model that best predicts on part of the conversation.
+We have succeeded to find configuration that beats bag-of-words prediction on the entire conversation,
+but in the end this model was not the optimal to predict partial converations.
+Except the experiments with the full topology, we also wanted to know if the auxiliary vector itself
+captures important knowledge on the conversation - we ran a bidirectional rnn with LSTM on the auxiliary 
+vectors (so each timestep represents a turn, and each turn is represented by 5 coordinate vector).
+We discovered that this vector indeed helps to predict end of dialog.
 
 \subsection{Experimental Setup}
 We have used the Frames dataset \cite{frames} as 
@@ -25,16 +45,18 @@ Word embedding dimension is set to 100 and the
 LSTM dimension is set to 50. 
 
 We have divided the dataset into 80\% training dialogs and 20\% test dialogs 
-(some of the dialogs were too short to be included, containing only 3 or less sentences).
+(some of the dialogs were too short to be included, containing only 3 or less turns).
 Training was performed with a mini-batch of size 20, 
-and 20 epochs.
+and 20 epochs. (Some experiments ran on smaller LSTM dimension and less epochs because of 
+lack of time)
 % Our network used SGD with a momentum of 0.9 \amir{verify} to train.
 
 \subsection{Baselines}% and Results
 To our knowledge, no solution for the 
 dialog-end problem has been previously proposed. To nevertheless
 gain insight on alternatives, we have tested various configurations 
-of the network. 
+of the network, and also implemented logistic regression on bag-of-words vectors.
+
 The different configurations of the network include: 
 (1) adding the additional turn-level encoding, 
 (2) including word and sentence level attention, 
@@ -67,6 +89,8 @@ implementation, and an RNN network whose input is only the semantic features des
 
 
 \subsection{Results}
+
+
 % To examine the usefulness of our approach and 
 % test the effectiveness of the different components, 
 % we have evaluated the different baselines on the Frames 
@@ -100,10 +124,11 @@ implementation, and an RNN network whose input is only the semantic features des
         \hline Yes & No & No & 4 & 69.2 \\
         \hline Yes & Yes & No & 4 & 66.1 \\
         \hline Yes & Yes & Yes & 4 & 62.2 \\
+        \hline Yes & No & Yes & 4 & 62.8 \\
         % \hline Yes & No & Yes & 4 & TBD \\
         \hline No & No & No & 8 & 69.8 \\
         \hline No & Yes & No & 8 & 73.4 \\
-        % \hline Yes & No & No & 8 & TBD \\
+        \hline Yes & No & No & 8 & 73.8 \\
         \hline Yes & Yes & No & 8 & 57.2 \\
         \hline Yes & Yes & Yes & 8 & 67.1 \\
         \hline Yes & No & Yes & 8 & 70.2 \\
@@ -125,7 +150,7 @@ implementation, and an RNN network whose input is only the semantic features des
     \centering
     % \begin{subfigure}[b]{0.55\columnwidth}
         \centering
-        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=2.5in]{exp/configs.pdf}
+        \includegraphics[trim=0cm 0.5cm 0cm 0cm, width=2.5in]{exp/exp.png}
         \caption{Performance of Selected Configurations}
         \label{graph:quality}
     % \end{subfigure}%
@@ -143,15 +168,15 @@ implementation, and an RNN network whose input is only the semantic features des
 
 The results for the different structures of the network are shown in Table \ref{tbl:resComps}. 
 First, note that our novel configuration with the turn layer and attention on the turns alone 
-performs better than the all other configurations (specifically, the one given in \cite{attention}) 
-reaching 70.2\% for $k=8$, and 93\% accuracy for the full dialog 
-(we were not able to run it for $k=4$ due to limitations in time). 
+performs better than the all other configurations - 93\% accuracy for the full dialog 
+
 All configurations show an improvement in performance with the increase of $k$, 
 except a single one which we will explain in the sequel. 
 Configurations that include a turn layer with the attention mechanism applied on all layers 
 tend to overfit the data reaching up to 99\% accuracy during training but 
 dropping up to 57.2\% accuracy during testing. 
-This suggests that these configurations are too complex for the amount of data in our dataset. 
+This suggests that these configurations are too complex for the amount of data in our dataset,
+and also too complex for taking only 4 turns. 
 Further note that for smaller values of $k$, the attention mechanism 
 (for words and sentences, turns, and both) damages performance due to overfitting. 
 However, for the full dialog, there is an improvement of up to 4\%. 
@@ -171,7 +196,7 @@ In particular, it outperforms the network in \cite{attention}.
 
 Surprisingly, the network configuration which combines the turn layer and attention along with the 
 semantic features did not perform better than other configurations, namely, 
-\amir{need to add results for the network with turns and semantic features!
+
 otherwise, it seems we did not even try to run it}. 
 This is despite the performances of each separate component: only the semantic feature and 
 only the network with turn layer and turn attention (Config 3,4 resp.). 
