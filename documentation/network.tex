@@ -7,7 +7,7 @@
 \def\layersepst{\layersept + \layerseps}
 \begin{figure}
 \begin{center}
-\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep, scale=.9]
+\begin{tikzpicture}[shorten >=1pt,->,draw=black!50, node distance=\layersep, scale=1]
     \tikzstyle{every pin edge}=[<-,shorten <=1pt]
     \tikzstyle{neuron}=[circle,fill=black!25,minimum size=17pt,inner sep=0pt]
     \tikzstyle{input neuron}=[neuron, fill=green!50];
@@ -26,7 +26,7 @@
         \node[input neuron] (I-\name) at (0,-\y) {$w_{2\y}$}; 
         \node[input neuron] (S-\name) at (\layerseps,-\y) {$s_{\y}$}; 
         \node[input neuron] (T-\name) at (\layersept,-\y) {$t_{\y}$}; 
-        \node[input neuron] (ST-\name) at (\layersepst,-\y) {$st_{\y}$}; 
+        % \node[input neuron] (ST-\name) at (\layersepst,-\y) {$st_{\y}$}; 
         }
 
     \foreach \name / \y in {1,...,4}{
@@ -34,7 +34,7 @@
         \node[hidden neuron] (H-\name) at (\layersep,-\y cm) {$\vec{h}_{2\y}$}; 
         \node[hidden neuron] (H-sent-\name) at (\layerseps + \layersep,-\y cm) {$\vec{h}_{3\y}$};
         \node[hidden neuron] (H-turn-\name) at (\layersept + \layersep,-\y cm) {$\vec{h}_{\y}$};
-        \node[hidden neuron] (H-sem-turn-\name) at (\layersepst + \layersep,-\y cm) {$\vec{h}_{\y}$};  
+        % \node[hidden neuron] (H-sem-turn-\name) at (\layersepst + \layersep,-\y cm) {$\vec{h}_{\y}$};  
         }
 
 
@@ -43,7 +43,7 @@
         \node[hidden neuron] (H-rev-\name) at (\layersep + \layersep,-\y cm) {$\cev{h}_{2\y}$};
         \node[hidden neuron] (H-rev-sent-\name) at (\layerseps + \layersep + \layersep,-\y cm) {$\cev{h}_{3\y}$};
         \node[hidden neuron] (H-rev-turn-\name) at (\layersept + \layersep + \layersep,-\y cm) {$\cev{h}_{\y}$};
-        \node[hidden neuron] (H-rev-sem-turn-\name) at (\layersepst + \layersep + \layersep,-\y cm) {$\cev{h}_{\y}$};
+        % \node[hidden neuron] (H-rev-sem-turn-\name) at (\layersepst + \layersep + \layersep,-\y cm) {$\cev{h}_{\y}$};
         }
 
     \foreach \name / \y in {1,...,4}{
@@ -55,13 +55,14 @@
         }
 
 
-    \node[output neuron, right of=A-turn-3] (V) at (\layersepst + \layersep+\layersep,-2.3)  {$\vec{v_d}$};
+    \node[output neuron, right of=A-turn-3] (V) at (\layersept + \layersep + \layersep + \layersep + .4cm,-2.3)  {$\vec{v_d}$};
     % \node[output neuron, right of=V] (sm) {softmax};
 
     \node[output neuron, above of=H-rev-1] (U) {$u_w$};
     \node[output neuron, above of=H-rev-sent-1] (Us) {$u_s$};
     \node[output neuron, above of=H-rev-turn-1] (Ut) {$u_t$};
-    \node[semantic neuron] (sem) at (\layersept + \layersep+\layersep+\layersep,0.3) {$u_{sem}$};% 
+    \node[semantic neuron] (sem) at (\layerseps + \layersep + \layersep + \layersep, 0.3) {$u_{sem}$};% 
+    % \node[semantic neuron] (sem) at (\layersept + \layersep+\layersep+\layersep,0.3) {$u_{sem}$};% 
 
    
     % \node[output neuron, right of=H-3] (O) {};
@@ -71,7 +72,7 @@
     \path (V) edge (O); %at (\layersept + \layerseps + \layersep + \layersep + 0.5cm,-2.2) 
 
      \foreach \source in {1,...,4}{
-     	\path (sem) edge (ST-\source);
+     	\path (sem) edge (T-\source);
      }
 
     % Connect every node in the input layer with every node in the
@@ -80,21 +81,21 @@
         \path (I-\source) edge (H-\source);
         \path (S-\source) edge (H-sent-\source);
         \path (T-\source) edge (H-turn-\source);
-        \path (ST-\source) edge (H-sem-turn-\source);
+        % \path (ST-\source) edge (H-sem-turn-\source);
         }
 
      \foreach \source [count=\i from 2] in {1,...,3}{
         \path (H-\source) edge (H-\i);
         \path (H-sent-\source) edge (H-sent-\i);
         \path (H-turn-\source) edge (H-turn-\i);
-        \path (H-sem-turn-\source) edge (H-sem-turn-\i);
+        % \path (H-sem-turn-\source) edge (H-sem-turn-\i);
         }
 
     \foreach \source [count=\i from 2] in {1,...,3}{
         \path (H-rev-\i) edge (H-rev-\source) ;
         \path (H-rev-sent-\i) edge (H-rev-sent-\source);
         \path (H-rev-turn-\i) edge (H-rev-turn-\source);
-        \path (H-rev-sem-turn-\i) edge (H-rev-sem-turn-\source);
+        % \path (H-rev-sem-turn-\i) edge (H-rev-sem-turn-\source);
         }
 
     
@@ -103,7 +104,7 @@
     	\node[draw,dotted,thick,fit=(H-rev-\source) (H-\source)] (box-\source) {};
     	\node[draw,dotted,thick,fit=(H-rev-sent-\source) (H-sent-\source)] (box-sent-\source) {};
     	\node[draw,dotted,thick,fit=(H-rev-turn-\source) (H-turn-\source)] (box-turn-\source) {};
-    	\node[draw,dotted,thick,fit=(H-rev-sem-turn-\source) (H-sem-turn-\source)] (box-sem-turn-\source) {};
+    	% \node[draw,dotted,thick,fit=(H-rev-sem-turn-\source) (H-sem-turn-\source)] (box-sem-turn-\source) {};
     	}
 
    	\foreach \source in {1,...,4}{
@@ -124,10 +125,12 @@
     	\path (box-sent-\source) edge (T-3);
     	\path (A-sent-\source) edge (T-3);
 
-    	\path (box-turn-\source) edge (ST-2);
-    	\path (A-turn-\source) edge (ST-2);
+    	% \path (box-turn-\source) edge (ST-2);
+    	% \path (A-turn-\source) edge (ST-2);
 
-    	\path (box-sem-turn-\source) edge (V);
+    	\path (box-turn-\source) edge (V);
+    	\path (A-turn-\source) edge (V);
+    	% \path (box-sem-turn-\source) edge (V);
     	% \path (A-turn-\source) edge (V);
     	}
 
@@ -151,7 +154,7 @@
     \node[annot,below of=box-turn-4, node distance=1.1cm] (te) {Turn Encoder};
     \node[annot,below of=A-turn-4, node distance=.9cm] (ta) {Turn Attention};
 
-    \node[annot,below of=box-sem-turn-4, node distance=1.1cm] (te) {Sem. Turn Encoder};
+    % \node[annot,below of=box-sem-turn-4, node distance=1.1cm] (te) {Sem. Turn Encoder};
     % \node[annot,left of=hl] {Input layer};
     % \node[annot,right of=hl] {Output layer};
 \end{tikzpicture}
@@ -169,8 +172,10 @@ and a semantic feature encoder.
 We have divided the task of encoding the dialog into several 
 layers of encoders, each dealing with the dialog in a different granularity. 
 At the lowest lever, we encode the words of each dialog into vectors 
-and use word-level attention. Then a sentence encoder and sentence level attention 
-translate the sentences into vectors, again using sentence-level attention, to extract a vector describing the text. 
+and use word-level attention. Then a sentence encoder and sentence-level attention 
+translate the sentences into vectors, again using sentence-level attention, to extract a vector describing the text 
+in each turn. Finally, we use the same mechanism of turn-level encoder and attention, where each turn is combined 
+with its semantic features (Section \ref{sec:sem}). 
 For the first step of encoding in each level, we use an LSTM-based sequence encoder \cite{lstm,birnn}. 
 % We use a LSTM-based sequence encoder \cite{BahdanauCB14} which uses 
 % a reset gate and an update gate ($r_t$ and $z_t$, respectively), 
@@ -251,20 +256,22 @@ based on the weights.
 
 We use a similar mechanism (including the forward and backward 
 LSTM, and the attention layer) for the sentence-level vectors (Sent. Encoder and Sent. Attention components in Figure \ref{fig:arch}), 
-and for the turns in the sequence $seq_i$, in order to get a turn representation 
+and for the turns in the sequence $seq_i$, in order to get a sequence representation vector 
 (Turn Encoder and Turn Attention components in Figure \ref{fig:arch}). 
-The output of this stage is a turn vector, representing {\em the text} in the each turn in the sequence. 
+Before applying the LSTM and attention on the turns, we add the corresponding semantic features 
+of each turn. 
+% The output of this stage is a turn vector, representing {\em the text} in the each turn in the sequence. 
 
 \subsection{Semantic Features}
 The additional semantic features specified 
 in Section \ref{sec:sem} ($u_{sem}$ in Figure \ref{fig:arch})
-are added as coordinates in each of the turn vectors, 
-so that each vector also contains semantic features  ($st_i$, $1\leq i \leq 4$ in Figure \ref{fig:arch}). 
+are added as coordinates to each of the turn vectors, 
+so that each vector also contains semantic features  ($t_i$, $1\leq i \leq 4$ in Figure \ref{fig:arch}). 
 All features are normalized by taking the largest 
 value in each coordinate across all sequences and dividing 
 all values in that coordinate by this value. 
 
-These semantic turn vectors are then inserted into a bidirectional RNN whose output 
+These turn vectors are then inserted into a bidirectional RNN whose output 
 is a vector representation of the entire sequence ($\vec{v_d}$ in Figure \ref{fig:arch}). 
 The generated vector is the final encoding for the sequence.
 

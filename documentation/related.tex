@@ -31,7 +31,7 @@ Naturally, when the full dialog is given as input, the dialog-end task
 can be viewed as a dialog act task since classifying the dialog act 
 of each turn reveals whether the goal of the dialog was met. 
 However, in the motivating use-case, the input is not a full dialog, and 
-therefore, different approach is called for. 
+therefore, a different approach is called for. 
 
 Our system mostly relied on work 
 done in the field of document or text classification \cite{attention,ZhangZL15,Lai,elhadad2017novel,van2017effective} 
@@ -47,5 +47,5 @@ using GRUs and an attention mechanism.
 This concept seems to fit our task as well. 
 By nature of the task, these approaches rely on text alone to infer the class 
 of the document, while in our task we can utilize additional semantic features to better 
-understand the context and add a layer above the sentence layer 
+understand the context and add a turn layer above the sentence layer 
 to encode the turns and give a finer grained specification of the dialog. 
